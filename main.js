@@ -6,11 +6,11 @@ import { loginCheck } from './app/loginCheck.js'
 import './app/logout.js'
 let currentDomain = window.location.origin
 export let webDomain = 
- 'http://localhost:5500'
+ //'http://localhost:5500'
 // 'https://neavesvoltio.github.io'
 // 'https://voltioenergy.com/bombshell'
 //'https://neavesvoltio.github.io/bombshellv2'
-  
+  'https://javierneaves.github.io/bet-admin'
 onAuthStateChanged(auth, async (user) => {
     try{
     
