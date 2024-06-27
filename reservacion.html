@@ -1,0 +1,153 @@
+<!DOCTYPE HTML>
+<!--
+
+Francisco Macías para Voltio 
+
+-->
+<html>
+	<head>
+		<title>bet</title>
+		<link
+		  rel="stylesheet"
+		  href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+		/>
+		
+		<link href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css' rel='stylesheet'>
+		<link
+		  rel="stylesheet"
+		  type="text/css"
+		  href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+		/>
+		<meta charset="utf-8" />
+		<meta
+		  name="viewport"
+		  content="width=device-width, initial-scale=1, user-scalable=no"
+		/>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 48
+      }
+      </style>
+		<link rel="stylesheet" href="./css/main.css" />
+		<link rel="stylesheet" href="./css/main.min.css" />
+		<style>
+			.fc-next-button, .fc--button, .fc-prev-button, .fc-today-button, .fc-dayGridMonth-button, .fc-timeGridWeek-button{
+				background-color: #ab077f !important;
+    			border-color: #ab077f;
+				
+			}
+		</style>
+		
+	  </head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<header id="header">
+					<nav id="nav">
+						<ul id="loginButtonsContainer">
+							<li><a href="index.html">Inicio</a></li>
+							<li>
+								<a href="#" class="icon solid"><span class="material-symbols-outlined">
+									account_balance_wallet
+									</span> Talero</a>
+								<ul>
+									<li><a href="reservacion.html">Calendario</a></li>
+									
+									<li><a href="contacto.html">Tickets</a></li>
+								</ul>
+							</li>
+						</ul>	
+					</nav>
+				</header>
+
+			<!-- Main -->
+				<section id="main" class="container">
+					<header>
+						<h2>Registo de actividades</h2>
+					</header>
+					<div class="row">
+						<div class="col-12">
+					<!-- Table -->
+								
+						</div>
+					</div>
+				</section>
+				<section>
+					<div class="container">
+						<div id="calendar"></div>
+					</div>
+				</section>
+					<div class="modal fade " id="setDateModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="myModal" aria-hidden="true" data-bs-backdrop="static">
+						<div class="modal-dialog modal-dialog-centered modal-xl">
+						<div class="modal-content">
+							<div class="modal-header">
+							<h5 class="modal-title" id="titulo"></h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+							</button>
+							</div>
+							<form id="formularioCalendar">
+							<div class="modal-body" id="modalBody">
+								<div class="form-floating mb-3">
+									<p type="date" name="date" id="start" class="h3 text-center"></p>
+									<p type="date" name="date" id="services" class="h4 text-center"></p>
+								</div>
+							</div>
+							<div class="modal-footer">
+								<button class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+							</div>
+							</form>
+							 
+						</div>
+						</div>
+					</div>
+
+			<!-- Footer -->
+				<footer id="footer">
+					<ul class="icons">
+						<li><a href="https://www.facebook.com/bombshellmxl" target="_blank"class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+						<li><a href="https://www.instagram.com/bombshellmxl" target="_blank"class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+						<li><a href="https://api.whatsapp.com/send?phone=526861766112" target="_blank"class="icon brands fa-whatsapp"><span class="label">
+Whatsapp</span></a></li>
+					</ul>
+					<ul class="copyright">
+						<li>&copy; Todos los derechos reservados.</li><li>Pagina oficial: <a href="https://www.bombshellbeautyspa.com/" target="_blank">bombshellbeautyspa.com</a></li>
+					</ul>
+				</footer>
+
+		</div>
+
+		<!-- Scripts -->
+		<script src="./main.js" type="module"></script>
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+		<script
+		  type="text/javascript"
+		  src="https://cdn.jsdelivr.net/npm/toastify-js"
+		></script>
+		<script src="./js/jquery.min.js"></script>
+		<script src="./js/jquery.dropotron.min.js"></script>
+		<script src="./js/jquery.scrollex.min.js"></script>
+		<script src="./js/breakpoints.min.js"></script>
+		<script src="./js/util.js"></script>
+		<script src="./js/main.js"></script>
+		
+		<script type="module" src="./main.js"></script>
+		<script src="./js/main.min.js"></script>
+		<script src="./js/moment.js"></script>
+		<script src="./app/espanolfullcalendar.js"></script>
+		<script type="module" src="./app/fullCalendar.js"></script>
+		<script type="module" src="./app/setReservation.js"></script>
+		<script src="./js/sweetAlert.js"></script>
+		
+		
+		
+		
+		
+
+	</body>
+</html>

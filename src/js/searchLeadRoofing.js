@@ -1,0 +1,1182 @@
+import { getFirestore, doc, getDoc, collection, getDocs, query, where, deleteDoc, orderBy, updateDoc, setDoc, addDoc, collectionGroup, startAfter, limit, serverTimestamp  } from '../firebase/firebaseJs.js'
+import { app, auth } from '../firebase/config.js'
+import { onAuthStateChanged, updateProfile } from '../firebase/firebaseAuth.js';
+import './signature_pad.js'
+import { showLoadingAlert } from './loadSweetAlert.js'
+import { calculateRoofCommissions } from './roofCalc.js'
+
+const db = getFirestore(app) 
+let voltioId 
+let data = []  
+let inputBox = document.getElementById('searchLeadInput')
+let searchLeadViewSection = document.querySelectorAll('.searchLeadViewSection')
+let clearInputsElement = document.querySelectorAll('.clearInputs')
+let customerNameOnTop = document.getElementById('customerNameOnTop')
+let viewProjectsButton = document.getElementById('viewProjectsButton');
+    viewProjectsButton.dataset.status = 'Project'
+let status = 'lead'
+let statusFilter = document.getElementById('statusFilter');
+let statusFilterData = 'In-Progress 🚀'
+let progressFilter
+let getProjectImagesButton = document.getElementById('getProjectImagesButton');
+let refreshCreditLinksButton = document.getElementById('refreshCreditLinksButton');
+let saveCreditLinksButton = document.getElementById('saveCreditLinksButton');
+let loading = document.getElementById('loading');
+
+// startLoading()
+
+function startLoading(){
+  loading.classList.remove("invisible");
+}
+
+function endLoading(){
+  loading.classList.add("invisible");
+}
+
+getComments()
+
+onAuthStateChanged(auth, async(user) => {
+    if(user){
+      viewProjectsButton.addEventListener('click', (e) => {
+        if(viewProjectsButton.dataset.status === 'Project'){
+          status = 'Project'
+          getLeadOrProjectData()
+          viewProjectsButton.dataset.status = 'lead'
+          viewProjectsButton.innerHTML = 'VIEW LEADS'
+          inputBox.value = ''
+          viewProjectsButton.value = ''
+          statusFilter.value = ''
+          document.getElementById('creationDate').innerHTML = 'CONTRACT DATE';
+        } else {
+          viewProjectsButton.dataset.status = 'Project'
+          status = 'lead'
+          getLeadOrProjectData()
+          viewProjectsButton.innerHTML = 'VIEW PROJECTS'
+          inputBox.value = ''
+          viewProjectsButton.value = ''
+          statusFilter.value = ''
+          document.getElementById('creationDate').innerHTML = 'CREATED DATE';
+        }
+        
+      })
+
+      //getFirestoreDataToPagination()
+      getLeadOrProjectData()
+
+      statusFilter.addEventListener('change', function (e) {
+        statusFilterData = e.target.value
+        getLeadOrProjectData(statusFilterData)
+      });
+
+      async function getLeadOrProjectData(filter){
+        data = []
+        if(!filter){
+          let querySnapshoot
+          const projectInfo = query(collection(db, 'leadData'), where('status', '==', status), where('project', '==', 'roofing'));
+          querySnapshoot = await getDocs(projectInfo)
+
+          const allData = querySnapshoot.forEach( async(doc) => {
+            let profileCloser =   !doc.data().profileCloser ? '' : doc.data().profileCloser
+            let profileSetter = ! doc.data().profileSetter ? '' : doc.data().profileSetter
+            let systemSize = !doc.data().systemSize ? '' : doc.data().systemSize
+            let chartDate = status === 'lead' ? doc.data().creationDate : doc.data().contractDate
+                data.push([
+                  doc.data().voltioIdKey,
+                  doc.data().customerName,
+                  doc.data().progress,
+                  doc.data().projectStatus,
+                  profileCloser,
+                  profileSetter,
+                  systemSize,
+                  chartDate,
+                ])
+          })
+        
+          searchLeadByInput()
+        } else {
+          let querySnapshoot
+          if(statusFilterData === ''){
+            const projectInfo = query(collection(db, 'leadData'), where('status', '==', status), where('project', '==', 'roofing'));
+            querySnapshoot = await getDocs(projectInfo)
+          } else if(!progressFilter){
+            const projectInfo = query(collection(db, 'leadData'), where('status', '==', status), where('projectStatus', '==', statusFilterData), where('project', '==', 'roofing'));
+            querySnapshoot = await getDocs(projectInfo)
+          }  
+
+          const allData = querySnapshoot.forEach( async(doc) => {
+            let profileCloser =   !doc.data().profileCloser ? '' : doc.data().profileCloser
+            let profileSetter = ! doc.data().profileSetter ? '' : doc.data().profileSetter
+            let systemSize = !doc.data().systemSize ? '' : doc.data().systemSize
+                data.push([
+                  doc.data().voltioIdKey,
+                  doc.data().customerName,
+                  doc.data().progress,
+                  doc.data().projectStatus,
+                  profileCloser,
+                  profileSetter,
+                  systemSize,
+                  doc.data().creationDate,
+  
+                ])
+          })
+        
+          searchLeadByInput()
+
+        }
+          
+      }
+
+      searchLeadViewSection.forEach( (e) => { 
+        // se ejecuta despues de dar click al boton .searchLeadViewSection para que refresque la info en caso de algun cambio
+        e.addEventListener('click', async (e) => {
+          data = []  
+          document.querySelector('#addNewLeadSection').style.display = 'none'
+          document.querySelector('#searchProjectSection').style.display = 'block'
+          document.querySelector('#profileViewSection').style.display = 'none'
+          viewProjectsButton.innerHTML = 'VIEW PROJECTS'
+          //document.getElementById('imageCustomerGallery').innerHTML = ''
+          document.getElementById('customerFilesUpload').value = ''
+          const projectInfo = query(collection(db, 'leadData'), where('status', '==', 'lead'), where('project', '==', 'roofing'));
+          const querySnapshoot = await getDocs(projectInfo)
+          const allData = querySnapshoot.forEach( async(doc) => {
+            let profileCloser =   !doc.data().profileCloser ? '' : doc.data().profileCloser
+            let profileSetter = ! doc.data().profileSetter ? '' : doc.data().profileSetter
+            let systemSize = !doc.data().systemSize ? '' : doc.data().systemSize
+                data.push([
+                  doc.data().voltioIdKey,
+                  doc.data().customerName,
+                  doc.data().progress,
+                  doc.data().projectStatus,
+                  profileCloser,
+                  profileSetter,
+                  systemSize,
+                  doc.data().creationDate,
+  
+                ])
+          })
+          clearRoofCalcData()
+          searchLeadByInput()
+          
+        })
+
+      })
+        
+    } else {
+    }
+})
+
+inputBox.addEventListener('input', () => {
+  searchLeadByInput()})
+
+function searchLeadByInput(){
+
+  let searchInput = document.getElementById("searchLeadInput").value.toString().toLowerCase().trim()
+  let searchWords = searchInput.split(/\w^/)
+
+  let resultsArray = searchInput === "" ? data : data.filter(function(r){
+    return searchWords.every(function(word){
+      return [1].some(function(colIndex){
+        return r[colIndex].toString().toLowerCase().indexOf(word) !== -1
+      })
+    })
+  })
+
+  let searchResultsBox = document.getElementById("searchResults")
+  let templateBox = document.getElementById("rowTemplate")
+  let template = templateBox.content
+
+  searchResultsBox.innerHTML = ""
+  resultsArray.forEach(function(r){
+    let tr = template.cloneNode(true)
+    let messageRow = tr.querySelector(".messageRow")
+    let leadId = tr.querySelector(".leadId");
+    let leadProgress = tr.querySelector(".leadProgress");
+    let leadStage = tr.querySelector(".leadStage");
+    let editButton = tr.querySelector(".editLeadButton"); // BUTTON THAT CONTAINS CUSTOMER NAME
+    let profileSetter = tr.querySelector('.profileSetter');
+    let profileCloser = tr.querySelector('.profileCloser');
+    let systemSize = tr.querySelector('.systemSize');
+    let leadCreatedDate = tr.querySelector('.leadCreatedDate');
+    const timestamp =  r[7] ;
+    const dateNew = new Date(timestamp.seconds * 1000 + Math.floor(timestamp.nanoseconds / 1000000));
+    const date = new Date (r[7] * 1000)    
+    let month = dateNew.getMonth() < 10 ? '0'+ (dateNew.getMonth() + 1): (dateNew.getMonth()+ 1)
+    let day = dateNew.getDate() < 10 ? '0' + dateNew.getDate() : dateNew.getDate()
+    const formattedDate = `${month}/${day}/${dateNew.getFullYear()}`;
+    messageRow.dataset.voltioId = r[0]
+    leadId.textContent = r[0]
+    editButton.textContent = r[1]
+    leadProgress.textContent = r[2]
+    leadStage.textContent = r[3]
+    profileSetter.textContent = r[5]
+    profileCloser.textContent = r[4]
+    systemSize.textContent = r[6]
+    leadCreatedDate.textContent = formattedDate
+    
+    editButton.dataset.leadVoltioId = r[0]; 
+    
+    searchResultsBox.appendChild(tr)
+    
+  })
+
+  let viewProfileButton = document.querySelectorAll('.editLeadButton')
+  viewProfileButton.forEach( btn => {
+    btn.addEventListener('click', async (e) => { 
+        voltioId = e.target.dataset.leadVoltioId
+        clearInputs()
+        setDataToProfileView(voltioId) 
+        getCreditInfo()
+    })
+  })
+  endLoading()
+  let messageRow = document.querySelectorAll('.messageRow');
+    messageRow.forEach(function(item) {
+        item.addEventListener('click', function (e) {
+            if (e.target.closest('.messageRow')) {
+                console.log('clicked ' + e.target.closest('.messageRow').dataset.voltioId);
+                voltioId = e.target.closest('.messageRow').dataset.voltioId
+                clearInputs()
+                setDataToProfileView(voltioId) 
+                
+              }
+        });
+    });
+}
+
+// THIS LET IS USED TO GET PROJECT DOC ID, AND HANDLE EDIT ACTIONS
+
+let docId
+
+// FUNCTION TO READ ALL LEAD INFO FROM DB AND SET ON EACH FIELD
+async function setDataToProfileView(voltioId){
+    getRepDropdown()
+    document.getElementById('titleOfEditLeadView').innerHTML = 'Lead'
+    document.getElementById('searchProjectSection').style.display = 'none'
+    document.getElementById('profileViewSection').style.display = 'block'
+    let progressBar = document.getElementById('progressBar')
+    // THIS QUERY GET LEAD PROFILE DATA
+    const projectInfo = query(collection(db, 'leadData'), where('voltioIdKey', '==', voltioId));
+        const querySnapshoot = await getDocs(projectInfo)
+        const allData = querySnapshoot.forEach( async(doc) => {
+            customerNameOnTop.innerHTML = doc.data().voltioIdKey.toUpperCase() + ' - ' + doc.data().customerName.toUpperCase()
+            document.getElementById('leadVoltioId').value = doc.data().voltioIdKey.toUpperCase()
+            document.getElementById('leadName').value = doc.data().customerName.toUpperCase()
+            document.getElementById('leadPhone').value = doc.data().customerPhoneNumber
+            document.getElementById('leadAddress').value = doc.data().customerAddress.toUpperCase()
+            document.getElementById('leadLanguage').value = doc.data().customerLanguage.toUpperCase()
+            document.getElementById('leadCity').value = doc.data().inputCity.toUpperCase()
+            document.getElementById('stateDropdown').value = doc.data().inputState.toUpperCase()
+            document.getElementById('leadZip').value = doc.data().inputZip
+            document.getElementById('leadEmail').value = doc.data().customerEmail
+            document.getElementById('leadCloser').value = doc.data().profileCloser
+            document.getElementById('leadSetter').value = doc.data().profileSetter
+            
+            docId = doc.id
+        })
+
+    // WE USE LEAD STATUS TO SET DATA ON STATUS VIEW SECTION
+    const docRef = doc(db, "leadStatus", voltioId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      document.getElementById('proposalStatus').value = docSnap.data().proposalStatus
+      document.getElementById('projectType').value = docSnap.data().projectType
+      document.getElementById('status').value = docSnap.data().status
+      document.getElementById('progress').value = docSnap.data().progress
+      progressBar.innerHTML = docSnap.data().progress
+      document.getElementById('apptDate').value = docSnap.data().apptDate
+      document.getElementById('creditStatus').value = docSnap.data().creditStatus
+      document.getElementById('ss').check = docSnap.data().ss
+      document.getElementById('docs').check = docSnap.data().docs
+      let progressValues = 
+      [['Missing stips', '3%'],
+      ['Missing utility bill', '6%'],
+      ['Site survey scheduled', '9%'],
+      ['Site survey completed', '12%'],
+      ['Pending site survey', '15%'],
+      ['Reschedule site survey', '18%'],
+      ['Plans ordered', '21%'],
+      ['Waiting for NTP', '24%'],
+      ['NTP completed', '27%'],
+      ['Expecting MPONE', '30%'],
+      ['MPONE Paid', '33%'],
+      ['Design', '34%'],
+      ['Engineering', '35%'],
+      ['Permits', '36%'],
+      ['Needs roof quote', '39%'],
+      ['Resign docs', '42%'],
+      ['Pending Reroof', '43%'],
+      ['Reroof scheduled', '45%'],
+      ['Reroof completed', '48%'],
+      ['Pending PV install', '51%'],
+      ['PV Install Reschedule', '52%'],
+      ['PV Install scheduled', '54%'],
+      ['PV Installed', '57%'],
+      ['MPU pending', '60%'],
+      ['MPU schedule', '63%'],
+      ['MPU installed', '66%'],
+      ['Expecting MPTWO', '69%'],
+      ['MPTWO Paid', '72%'],
+      ['Pending Final Inspection', '75%'],
+      ['Final inspection scheduled', '78%'],
+      ['Final inspection completed', '81%'],
+      ['Corrections needed', '84%'],
+      ['Submitted for PTO', '87%'],
+      ['PTO approved', '90%'],
+      ['System activated', '93%'],
+      ['Final Documents', '95%'],
+      ['Job completed', '100%']]
+      let cons = progressValues.map( r => r[0])
+      const posIndex = cons.indexOf(docSnap.data().progress)
+      const value = progressValues[posIndex][1]
+      progressBar.style.width = value
+      // THIS FUNCTIONS AREA USED TO COMPLETE DATA ON SOME SECTIONS
+      // LIKE COMMENTS, CALCULATOR DATA AND CREDIT INFO, JUST IS PENDING CREDIT LINKS
+       
+
+    } else {
+      // doc.data() will be undefined in this case
+    }
+    loadValuesFromRoofCalc(voltioId)
+       
+}
+
+let editLeadButtonToServer = document.getElementById('editLeadButtonToServer')
+
+editLeadButtonToServer.addEventListener('click', (e) => {
+  saveLeadToServer()
+})
+
+async function saveLeadToServer(){
+  const docRef = doc(db, 'leadData', docId)
+    await updateDoc(docRef, {
+      customerName: document.getElementById('leadName').value,
+      customerPhoneNumber: document.getElementById('leadPhone').value,
+      customerAddress: document.getElementById('leadAddress').value,
+      customerLanguage: document.getElementById('leadLanguage').value,
+      inputCity: document.getElementById('leadCity').value,
+      inputState: document.getElementById('stateDropdown').value,
+      inputZip: document.getElementById('leadZip').value,
+      customerEmail: document.getElementById('leadEmail').value,
+      profileCloser: document.getElementById('leadCloser').value,
+      profileSetter: document.getElementById('leadSetter').value,
+      
+    }).then( () => {
+      Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'Your data has been saved',
+          showConfirmButton: false,
+          timer: 1500
+        })
+  }).catch( (error) => {
+      console.log(error);
+  })
+}
+
+function clearInputs(){
+  clearInputsElement.forEach((e) => {
+    e.innerHTML = ''
+  })
+}
+
+async function getComments(){
+  let commentsBd = ['listOfCommentsCustomer', 'listOfCommentsAdmin']
+  let voltioId = document.getElementById("leadVoltioId").value
+  for(var n = 0; n <=commentsBd.length -1 ; n++){
+    let dataNotes = []
+  const voltioIds = query(collection(db, commentsBd[n]), where('voltioId', '==', voltioId), orderBy("date", 'desc'))
+      const voltioIdsSnapshot = await getDocs(voltioIds)
+      voltioIdsSnapshot.forEach((e) => {
+          dataNotes.push([e.data().customerComment, e.data().date, e.data().userName])
+      })
+
+  document.getElementById(commentsBd[n]).innerHTML = ""
+  let mainDiv = document.getElementById(commentsBd[n])
+  let noteContainer = document.createElement("div")
+  let userNameTitle = document.createElement("strong")
+  let textOfComment = document.createElement("p")
+  let dateContainer = document.createElement("div")
+  let dateOfComment = document.createElement("p")
+  
+  for( var i=0;i <=dataNotes.length - 1; i++){
+      let noteContainer = document.createElement("div")
+      let userNameTitle = document.createElement("strong")
+      let textOfComment = document.createElement("p")
+      let dateContainer = document.createElement("div")
+      let dateOfComment = document.createElement("p")    
+      noteContainer.className = "row border-bottom border-info-subtle p-2"
+      //noteContainer.classList.add("mb-2")
+      dateContainer.classList.add("row")
+      dateOfComment.classList.add("text-end")
+      dateOfComment.classList.add("fs-6")
+      dateOfComment.classList.add("fw-light")
+      textOfComment.classList.add("text-light")
+      userNameTitle.classList.add("text-light")
+      dateOfComment.classList.add("text-light")
+      userNameTitle.innerHTML = dataNotes[i][2]
+      textOfComment.innerHTML = dataNotes[i][0]
+      dateOfComment.innerHTML = dataNotes[i][1]
+      mainDiv.appendChild(noteContainer)
+      noteContainer.append(userNameTitle)
+      noteContainer.append(textOfComment)
+      noteContainer.append(dateContainer)
+      dateContainer.append(dateOfComment)
+  }
+  }
+  
+}
+
+// START SECTION TO UPLOAD IMAGES
+
+  let customerFilesUpload =  document.querySelector('#customerFilesUpload');
+  
+  customerFilesUpload.addEventListener('change', function (e) {
+    // Inicia el sweet alert 
+    const progressAlert = Swal.fire({
+      title: 'loading file...',
+      html: '<div class="progress"><div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>',
+      showCancelButton: false,
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false
+    });
+    // termina el sweet alert
+
+    console.log('customer files upload chganged');
+    let url = "https://script.google.com/macros/s/AKfycbxXIJUh1IuSUsuaktTU4m6zd82FTMJXpK7H1D7x5EdRhD0CchBon0OvkoY_nDuQt_10/exec"
+    console.log('file change');
+    let fr = new FileReader()
+    fr.addEventListener('loadend', function (e) {
+      let res = fr.result
+      
+      let spt = res.split('base64,')[1]
+      console.log(customerFilesUpload.files[0].type);
+      let obj = {
+        base64:spt,
+        type:customerFilesUpload.files[0].type,
+        name:voltioId
+      }
+      console.log(obj);
+      let response =  fetch(url, {
+          method:'POST',
+          body: JSON.stringify(obj),
+        })
+      .then(r=>r.text())
+      .then(data => {
+        console.log(data);
+        try {
+          const response = JSON.parse(data);
+          console.log(response.link);
+          
+          saveToUtilityBillCollection(response.link)
+          // Cerrar el Sweet Alert
+          progressAlert.close();
+          // Mostrar una alerta de éxito
+          Swal.fire({
+            icon: 'success',
+            title: 'File loaded',
+            text: `The file has been loaded`,
+            confirmButtonText: 'OK'
+          });
+        } catch (e) {
+          console.error("Error al analizar la respuesta JSON: ", e);
+        }
+      })
+      .catch(err => {
+        console.error("Error en la solicitud POST: ", err);
+      });
+    });
+    fr.readAsDataURL(customerFilesUpload.files[0])
+  });
+
+  async function saveToUtilityBillCollection(link) {
+    try {
+
+      const docRef = await addDoc(collection(db, 'utilityBill'), {
+        voltioId: voltioId,
+        link: link,
+        timestamp: new Date().toISOString()
+      }).then(getImagesFromUtilityBillCollection())
+
+    } catch (error) {
+      console.error('Error al guardar los datos:', error);
+    }
+  }
+  
+  let viewCustomersImageButton = document.getElementById('viewCustomersImageButton');
+
+  viewCustomersImageButton.addEventListener('click', function (e) {
+    getImagesFromUtilityBillCollection()
+  });
+
+  async function getImagesFromUtilityBillCollection(){
+    const billsCol = collection(db, 'utilityBill');
+    const q = query(billsCol, where('voltioId', '==', voltioId));
+    const querySnapshot = await getDocs(q);
+    const bills = querySnapshot.docs.map((doc) => doc.data());
+    //generateUtilityBillImagesHTML(bills)
+    const thumbnailElements = bills.map((thumbnail) => generateThumbnail(thumbnail.link, thumbnail.voltioId));
+    insertThumbnails(thumbnailElements);
+    
+  }
+
+  function generateThumbnail(link, voltioId) {
+    const thumbnailDiv = document.createElement('div');
+    thumbnailDiv.classList.add('col-sm-6', 'col-md-3');
+  
+    const thumbnail = document.createElement('div');
+    thumbnail.classList.add('thumbnail');
+  
+    const image = document.createElement('img');
+    image.classList.add('img-thumbnail', 'mb-2');
+    image.src = link;
+    image.alt = voltioId;
+  
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('close');
+    closeButton.innerHTML = '&times;';
+    closeButton.addEventListener('click', () => thumbnailDiv.remove());
+  
+    thumbnail.appendChild(image);
+    //thumbnail.appendChild(closeButton);
+    thumbnailDiv.appendChild(thumbnail);
+  
+    image.addEventListener('click', () => window.open(link, '_blank'));
+  
+    return thumbnailDiv;
+  }
+  
+  function insertThumbnails(thumbnails) {
+    const container = document.getElementById('roofImagesContainer');
+    const customerFilesUpload = document.getElementById('customerFilesUpload');
+    customerFilesUpload.value = ''
+    container.innerHTML = ''
+    thumbnails.forEach((thumbnail) => container.appendChild(thumbnail));
+  }
+// END OF UPLOAD IMAGE SECTION
+
+// START CREDIT INFO SECTION
+let runCreditDataView = document.getElementById('runCreditDataView');
+
+runCreditDataView.addEventListener('change', function (e) {
+    let dob = document.getElementById('leadDob').value;
+    let job = document.getElementById('leadJobOcupation').value;
+    let ssn = document.getElementById('leadSSN').value;
+    let annualIncome = document.getElementById('leadAnnualIncome').value;    
+    createOrEditCreditInfo(dob, job, ssn, annualIncome)
+});
+
+// Función para crear o editar un elemento de la colección "creditInfo"
+async function createOrEditCreditInfo(dob, job, ssn, annualIncome) {
+  const creditInfoRef = doc(collection(db, "creditInfo"), voltioId);
+  const timestamp = serverTimestamp();
+  
+  // Datos a guardar en Firestore
+  const data = {
+    dob,
+    job,
+    ssn,
+    annualIncome,
+    editedAt: timestamp
+  };
+
+  try {
+    // Se guarda el elemento en Firestore
+    await setDoc(creditInfoRef, data, { merge: true });
+    console.log("Elemento creado o editado correctamente");
+  } catch (error) {
+    console.error("Error al crear o editar elemento: ", error);
+  }
+}
+
+const leadSSN = document.getElementById("leadSSN");
+leadSSN.addEventListener("input", () => {
+  const value = leadSSN.value;
+  if (value.length > 9) {
+    leadSSN.style.borderColor = "red";
+    leadSSN.value = value.slice(0, 9);
+  } else {
+    leadSSN.style.borderColor = "";
+  }
+});
+
+// get credit info
+
+async function getCreditInfo() {
+  try {
+    // Obtener la referencia del documento
+    const docRef = doc(db, 'creditInfo', voltioId);
+
+    // Obtener los datos del documento
+    const docSnap = await getDoc(docRef);
+
+    // Comprobar si el documento existe
+    if (docSnap.exists()) {
+      // Obtener los datos del documento
+       const  voltioData = docSnap.data()
+        document.getElementById('leadDob').value = voltioData.dob
+        document.getElementById('leadJobOcupation').value = voltioData.job
+        document.getElementById('leadSSN').value = voltioData.ssn
+        document.getElementById('leadAnnualIncome').value = voltioData.annualIncome
+        // Devolver el objeto con los datos de Voltio
+      
+    } else {
+      console.log('El documento no existe');
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// firmar pad
+
+// Obtener los elementos del DOM
+const canvas = document.getElementById("siganturePad");
+const saveSignatureButton = document.getElementById("saveSignature");
+const clearSignature = document.getElementById('clearSignature');
+
+// Configuración del canvas y del SignaturePad
+const signaturePad = new SignaturePad(canvas, {
+  backgroundColor: "black",
+  penColor: "white"
+});
+
+let progressAlert
+
+// Función para guardar la firma como imagen
+function saveSignature() {
+  saveSignatureButton.style.display = 'none'
+  if (signaturePad.isEmpty()) {
+    alert("Por favor, firme antes de guardar");
+    saveSignatureButton.style.display = 'block'
+  } else {
+    // Inicia el sweet alert 
+    progressAlert = Swal.fire({
+      title: 'loading file...',
+      html: '<div class="progress"><div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>',
+      showCancelButton: false,
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false
+    });
+    // termina el sweet alert
+    // Convertir la firma a una imagen base64
+    const dataUrl = signaturePad.toDataURL();
+    // Hacer algo con la imagen, como enviarla al servidor o guardarla en Firebase Storage
+    savePadSignatureOnDrive(dataUrl)
+    
+  }
+}
+
+// Agregar un evento de clic al botón de guardar
+saveSignatureButton.addEventListener("click", saveSignature);
+
+clearSignature.addEventListener('click', function (e) {
+  signaturePad.clear()
+});
+
+
+function savePadSignatureOnDrive(dataUrl){
+  let url = "https://script.google.com/macros/s/AKfycbx6tLgqSVmHw_tXzQON94hdpkhRhj1nvgaJtmzs7-AGhONwpKS4V0jISQxBN1lFXIxrHw/exec"
+  let spt = dataUrl.split('base64,')[1]
+    
+    let obj = {
+      base64:spt,
+      type:'image/png',
+      name:voltioId
+    }
+    let response =  fetch(url, {
+        method:'POST',
+        body: JSON.stringify(obj),
+      })
+    .then(r=>r.text())
+    .then(data => {
+      try {
+        const response = JSON.parse(data);
+        
+        saveToSignaturePadCollection(response.link)
+      } catch (e) {
+        console.error("Error al analizar la respuesta JSON: ", e);
+      }
+    })
+    .catch(err => {
+      console.error("Error en la solicitud POST: ", err);
+    })
+  }
+
+ async function saveToSignaturePadCollection(link){
+    try {
+      const docRef = await addDoc(collection(db, 'signaturePad'), {
+        voltioId: voltioId,
+        link: link,
+        timestamp: new Date().toISOString()
+      }).then(getImagesFromSignaturePadCollection())
+    } catch (error) {
+      console.error('Error al guardar los datos:', error);
+    }
+  }
+
+async function getImagesFromSignaturePadCollection(){
+    const billsCol = collection(db, 'signaturePad');
+    const q = query(billsCol, where('voltioId', '==', voltioId));
+    const querySnapshot = await getDocs(q);
+    const bills = querySnapshot.docs.map((doc) => doc.data());
+    const thumbnailElements = bills.map((thumbnail) => generateThumbnailSignature(thumbnail.link, thumbnail.voltioId));
+    insertThumbnailsSignature(thumbnailElements);
+  }
+
+  function generateThumbnailSignature(link, voltioId) {
+    const thumbnailDiv = document.createElement('div');
+    thumbnailDiv.classList.add('col-sm-6', 'col-md-3');
+  
+    const thumbnail = document.createElement('div');
+    thumbnail.classList.add('thumbnail');
+  
+    const image = document.createElement('img');
+    image.classList.add('img-thumbnail', 'mb-2');
+    image.src = link;
+    image.alt = voltioId;
+  
+    const closeButton = document.createElement('button');
+    closeButton.classList.add('close');
+    closeButton.innerHTML = '&times;';
+    closeButton.addEventListener('click', () => thumbnailDiv.remove());
+  
+    thumbnail.appendChild(image);
+    //thumbnail.appendChild(closeButton);
+    thumbnailDiv.appendChild(thumbnail);
+  
+    image.addEventListener('click', () => window.open(link, '_blank'));
+  
+    return thumbnailDiv;
+  }
+
+  function insertThumbnailsSignature(thumbnails) {
+    const container = document.getElementById('imageViewerSignature');
+    signaturePad.clear()
+    container.innerHTML = ''
+    thumbnails.forEach((thumbnail) => container.appendChild(thumbnail));
+    saveSignatureButton.style.display = 'block'
+    // Cerrar el Sweet Alert
+    progressAlert.close();
+    // Mostrar una alerta de éxito
+    Swal.fire({
+      icon: 'success',
+      title: 'File loaded',
+      text: `The file has been loaded`,
+      confirmButtonText: 'OK'
+    });
+    
+  }
+
+  // add an event to get signature images
+  let viewSignatures = document.getElementById('viewSignatures');
+  viewSignatures.addEventListener('click', function (e) {
+    getImagesFromSignaturePadCollection()
+  });
+  // approve credit by Admin
+  let approvedByAdminBtn = document.getElementById('approvedByAdminBtn');
+
+  approvedByAdminBtn.addEventListener('click', async function (e) {
+    const creditInfoRef = doc(collection(db, "creditInfo"), voltioId);
+    try {
+      // Se guarda el elemento en Firestore
+      await setDoc(creditInfoRef, {approved: 'Yes'}, { merge: true });
+      console.log("Elemento creado o editado correctamente");
+    } catch (error) {
+      console.error("Error al crear o editar elemento: ", error);
+    }
+  });
+
+  // START SECTION TO UPLOAD CREDIT IMAGES
+
+  let creditFilesUpload = document.getElementById('creditFilesUpload');
+
+  
+  creditFilesUpload.addEventListener('change', function (e) {
+    // Inicia el sweet alert 
+    const progressAlert = Swal.fire({
+      title: 'loading file...',
+      html: '<div class="progress"><div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>',
+      showCancelButton: false,
+      showConfirmButton: false,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      allowEnterKey: false
+    });
+    // termina el sweet alert
+
+    let url = "https://script.google.com/macros/s/AKfycbweLOiqVU501vGESJXZ1iZo0Z-lJQaIbZef1PRazpHtZe_BxAh_KPrkSeLwOe-7yhsL/exec"
+    let fr = new FileReader()
+    fr.addEventListener('loadend', function (e) {
+      let res = fr.result
+      
+      let spt = res.split('base64,')[1]
+      let obj = {
+        base64:spt,
+        type:creditFilesUpload.files[0].type,
+        name:voltioId
+      }
+      let response =  fetch(url, {
+          method:'POST',
+          body: JSON.stringify(obj),
+        })
+      .then(r=>r.text())
+      .then(data => {
+        try {
+          const response = JSON.parse(data);
+          
+          saveToCreditInfoImagesCollection(response.link)
+          // Cerrar el Sweet Alert
+          progressAlert.close();
+          // Mostrar una alerta de éxito
+          Swal.fire({
+            icon: 'success',
+            title: 'File loaded',
+            text: `The file has been loaded`,
+            confirmButtonText: 'OK'
+          });
+        } catch (e) {
+          console.error("Error al analizar la respuesta JSON: ", e);
+        }
+      })
+      .catch(err => {
+        console.error("Error en la solicitud POST: ", err);
+      });
+    });
+    fr.readAsDataURL(creditFilesUpload.files[0])
+});
+
+async function saveToCreditInfoImagesCollection(link) {
+  try {
+
+    const docRef = await addDoc(collection(db, 'creditInfoImages'), {
+      voltioId: voltioId,
+      link: link,
+      timestamp: new Date().toISOString()
+    }).then(getImagesFromcreditInfoImagesCollection())
+
+  } catch (error) {
+    console.error('Error al guardar los datos:', error);
+  }
+}
+
+let viewCreditImageButton = document.getElementById('viewCreditImageButton');
+viewCreditImageButton.addEventListener('click', function (e) {
+  getImagesFromcreditInfoImagesCollection()
+});
+
+async function getImagesFromcreditInfoImagesCollection(){
+  const billsCol = collection(db, 'creditInfoImages');
+  const q = query(billsCol, where('voltioId', '==', voltioId));
+  const querySnapshot = await getDocs(q);
+  const bills = querySnapshot.docs.map((doc) => doc.data());
+  const thumbnailElements = bills.map((thumbnail) => generateThumbnail(thumbnail.link, thumbnail.voltioId));
+  insertThumbnailsCredit(thumbnailElements);
+  
+}
+
+function insertThumbnailsCredit(thumbnails) {
+  const container = document.getElementById('previewCreditFiles');
+  const upFileCredit = document.getElementById('creditFilesUpload');
+  upFileCredit.value = ''
+  container.innerHTML = ''
+  thumbnails.forEach((thumbnail) => container.appendChild(thumbnail));
+}
+// END OF UPLOAD IMAGE SECTION
+
+// START PROJECT IMAGES UPLOAD SECTION
+projectImagesInput
+getProjectImagesButton 
+
+
+  
+projectImagesInput.addEventListener('change', function (e) {
+  // Inicia el sweet alert 
+  const progressAlert = Swal.fire({
+    title: 'loading file...',
+    html: '<div class="progress"><div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div></div>',
+    showCancelButton: false,
+    showConfirmButton: false,
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    allowEnterKey: false
+  });
+  // termina el sweet alert
+
+  let url = "https://script.google.com/macros/s/AKfycbypzkBqI-Hl-8b-J_Pz7u7-nzHuE69moHyUJD6ufU1s0Qrl-oZGeDvF6gdtwwDT7buEZg/exec"
+  let fr = new FileReader()
+  fr.addEventListener('loadend', function (e) {
+    let res = fr.result
+    
+    let spt = res.split('base64,')[1]
+    let obj = {
+      base64:spt,
+      type:projectImagesInput.files[0].type,
+      name:voltioId
+    }
+    let response =  fetch(url, {
+        method:'POST',
+        body: JSON.stringify(obj),
+      })
+    .then(r=>r.text())
+    .then(data => {
+      try {
+        const response = JSON.parse(data);
+        
+        saveToProjectImagesCollection(response.link)
+        // Cerrar el Sweet Alert
+        progressAlert.close();
+        // Mostrar una alerta de éxito
+        Swal.fire({
+          icon: 'success',
+          title: 'File loaded',
+          text: `The file has been loaded`,
+          confirmButtonText: 'OK'
+        });
+      } catch (e) {
+        console.error("Error al analizar la respuesta JSON: ", e);
+      }
+    })
+    .catch(err => {
+      console.error("Error en la solicitud POST: ", err);
+    });
+  });
+  fr.readAsDataURL(projectImagesInput.files[0])
+});
+
+async function saveToProjectImagesCollection(link) {
+try {
+
+  const docRef = await addDoc(collection(db, 'projectImages'), {
+    voltioId: voltioId,
+    link: link,
+    timestamp: new Date().toISOString()
+  }).then(getImagesFromProjectImagesCollection())
+
+} catch (error) {
+  console.error('Error al guardar los datos:', error);
+}
+}
+
+getProjectImagesButton.addEventListener('click', function (e) {
+getImagesFromProjectImagesCollection()
+});
+
+async function getImagesFromProjectImagesCollection(){
+const projectCol = collection(db, 'projectImages');
+const q = query(projectCol, where('voltioId', '==', voltioId));
+const querySnapshot = await getDocs(q);
+const images = querySnapshot.docs.map((doc) => doc.data());
+const thumbnailElements = images.map((thumbnail) => generateThumbnail(thumbnail.link, thumbnail.voltioId));
+insertThumbnailsProjectImages(thumbnailElements);
+
+}
+
+function insertThumbnailsProjectImages(thumbnails) {
+const container = document.getElementById('imageProjectGallery');
+const projectImagesInput = document.getElementById('projectImagesInput');
+projectImagesInput.value = ''
+container.innerHTML = ''
+thumbnails.forEach((thumbnail) => container.appendChild(thumbnail));
+}
+// END OF UPLOAD PROJECT IMAGE SECTION
+
+// THIS FUNCTION GET REP INFO TO LOAD DROPDOWN CLOSER AND SETTER
+async function getRepDropdown() {
+  const db = getFirestore();
+
+  // const userProfileCollection = collection(db, 'userProfile');
+
+  // const userProfileSnapshot = await getDocs(userProfileCollection);
+  let userEmails = [];
+  const q = query(collection(db, "userProfile"));
+  const querySnapshot = await getDocs(q);
+  userEmails = querySnapshot.docs.map((doc) => doc.data().userEmail);
+  leadCloser.innerHTML = ' '
+  leadCloser.appendChild(document.createElement('option'))
+  leadSetter.innerHTML = ' '
+  leadSetter.appendChild(document.createElement('option'))             
+  userEmails.forEach(function(item) {
+      let el = document.createElement('option');
+      el.innerHTML = item
+      leadSetter.appendChild(el)
+  });
+
+  userEmails.forEach(function(item) {
+      let el = document.createElement('option');
+      el.innerHTML = item
+      leadCloser.appendChild(el)
+  });
+
+  return userEmails;
+}
+
+saveCreditLinksButton.addEventListener('click', function (e) {
+  saveCreditLinks()
+});
+
+function saveCreditLinks() {
+  let creditLinksCollection = collection(db, "creditLinks");
+  
+  let creditLinksName = document.getElementById("creditLinksName").value;
+  let creditLinks = document.getElementById("creditLinks").value;
+
+  let linkRule = creditLinks.slice(0,4) === 'http'|| creditLinks.slice(0,5) === 'https' ? 1 : 0
+  if (linkRule === 1) {
+    // El valor cumple con el patrón
+    let creditLinkData = {
+      name: creditLinksName,
+      link: creditLinks,
+      voltioId: voltioId
+    };
+
+    addDoc(creditLinksCollection, creditLinkData)
+          .then( () => {
+            document.getElementById("creditLinksName").value = ''
+            document.getElementById("creditLinks").value = ''
+            getCreditLinks()
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Your data has been saved',
+                showConfirmButton: false,
+                timer: 1500
+              })
+        }).catch( (error) => {
+            console.log(error);
+        })
+    // Aquí puedes realizar las operaciones adicionales que desees
+  } else {
+    // El valor no cumple con el patrón
+    Swal.fire({
+      position: 'top-end',
+      icon: 'error',
+      title: 'Please confirm your data',
+      showConfirmButton: false,
+      timer: 1500
+    })
+    // Puedes mostrar un mensaje de error o tomar alguna acción apropiada
+  }
+
+  
+
+}
+
+refreshCreditLinksButton.addEventListener('click', function (e) {
+  getCreditLinks()
+});
+
+async function getCreditLinks(){
+  const creditLinksCol = collection(db, "creditLinks");
+  const q = query(creditLinksCol, where("voltioId", "==", voltioId));
+  const creditLinksArray = [];
+
+  try {
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // Obtener los datos del documento y agregarlos al array
+      const creditLinkData = doc.data();
+      let creditLinkId = doc.id
+      creditLinksArray.unshift({
+        id: creditLinkId,
+        ...creditLinkData
+      });
+    });
+
+    // Hacer algo con el array de creditLinks
+    const divPrincipal = document.getElementById("linkPreviews");
+    divPrincipal.innerHTML = ''
+
+    creditLinksArray.forEach(link => {
+      let linkData = link.link
+      let linkName = link.name
+      let linkId = link.id
+
+      var divCol = document.createElement("div");
+      divCol.className = "col-lg-4 col-sm-12 mb-4";
+
+      var divCard = document.createElement("div");
+      divCard.className = "card h-100";
+
+      var iframe = document.createElement("iframe");
+      iframe.src = linkData;
+      iframe.className = "col-sm-6 col-md-12";
+
+      var divCardBody = document.createElement("div");
+      divCardBody.className = "card-body";
+
+      var h5 = document.createElement("h5");
+      h5.className = "card-title";
+      h5.textContent = linkName;
+
+      var link = document.createElement("a");
+      link.href = linkData;
+      link.dataset.id = linkId
+      link.target = "_blank";
+      link.className = "btn btn-primary";
+      link.textContent = "Ir al enlace";
+
+      divCardBody.appendChild(h5);
+      divCardBody.appendChild(link);
+
+      divCard.appendChild(iframe);
+      divCard.appendChild(divCardBody);
+
+      divCol.appendChild(divCard);
+
+      divPrincipal.appendChild(divCol);
+      });
+  } catch (error) {
+    console.log("Error obteniendo los creditLinks:", error);
+  }
+}
+
+async function loadValuesFromRoofCalc(voltioId){
+  console.log('loadValuesFromRoofCalc ' + voltioId);
+  try {
+      const docRef = doc(db, 'roofCalc', voltioId);
+      
+      const docSnapshot = await getDoc(docRef);
+      if (docSnapshot.exists()) {
+        const data = docSnapshot.data();
+        document.getElementById('roofDesignArea').value = data.areaValue
+        document.getElementById('roofMonths').value = data.months
+        document.getElementById('roofAdders').value = data.roofAdders
+        document.getElementById('roofAdders2').value = data.roofAdders2
+        document.getElementById('roofAdders3').value = data.roofAdders3
+        document.getElementById('roofCashback').value = data.roofCashback
+        document.getElementById('roofPrice').value = data.roofPrice
+        document.getElementById('roofFinancing').value = data.financing
+        document.getElementById('roofSquares').value = data.squares
+        console.log('Datos encontrados:', data);
+        calculateRoofCommissions()
+      } else {
+        console.log('No se encontraron datos con el ID especificado.');
+      }
+    } catch (error) {
+      console.error('Error al leer los datos:', error);
+    }
+}
+
+function clearRoofCalcData(){
+  document.getElementById('roofDesignArea').value = ''
+  document.getElementById('roofMonths').value = 0
+  document.getElementById('roofAdders').value = 0
+  document.getElementById('roofAdders2').value = 0
+  document.getElementById('roofAdders3').value = 0
+  document.getElementById('roofCashback').value = 0
+  document.getElementById('roofPrice').value = 0
+  document.getElementById('roofFinancing').value = ''
+  document.getElementById('roofSquares').value = 0
+  document.getElementById('roofCommissions').value = '';
+  document.getElementById('roofMonthsAmount').value = '';
+  document.getElementById('roofTotalAdders').value = '';
+  document.getElementById('roofMonthlyPayment').value = '';
+  document.getElementById('roofMonthlyPaymentWAdders').value = '';
+  document.getElementById('roofCommissions').value = '$0.00';
+  document.getElementById('roofPriceWAdders').value = '';
+}

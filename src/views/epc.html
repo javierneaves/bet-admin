@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="Voltio dashboard">
+  <link rel="stylesheet" href="../style.css">
+    <link rel="stylesheet" href="../resources/sweetAlert.css">
+	<title>Voltio Dashboard</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <!-- End fonts -->
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings:
+      'FILL' 0,
+      'wght' 400,
+      'GRAD' 0,
+      'opsz' 48
+    }
+    </style>
+</head>
+<body>
+	<div class="main-wrapper bg-dark">
+
+
+		<!-- partial -->
+	
+    <div class="page-wrapper bg-dark">
+      <div class="page-content">
+          <section id="addInstallerSection">
+            <div class="page-content bg-transparent">
+              <div class="row">
+                <div class="col-12 col-md-6 grid-margin">
+                  <!-- Installer info-->
+                  <div class="card rounded bg-transparent border-info mb-2">
+                    <div class="card-header bg-transparent shadow">
+                      <H5 id="addInstallerTitle">Add Installer..</H5>
+                    </div>
+                    <div class="card-body">
+                      <form id="addInstallerForm">
+                        <div class="mb-3">
+                          <label for="epcName" class="form-label text-light">INSTALLER NAME</label>
+                          <input type="text" class="form-control bg-dark border-info text-light" id="epcName" aria-describedby="epc name">
+                        </div>
+                        <div class="mb-3">
+                          <label for="epcRedline" class="form-label text-light">REDLINE</label>
+                          <input type="number" class="form-control bg-dark border-info text-light" id="epcRedline" aria-describedby="redline">
+                        </div>
+                        <div class="mb-3">
+                          <label for="epcMPU" class="form-label text-light">MPU $</label>
+                          <input type="number" class="form-control bg-dark border-info text-light" id="epcMPU" aria-describedby="epcMPU">
+                        </div>
+                        <div class="mb-3" id="statusSelectContainer">
+
+                        </div>
+                        <div class="row container mx-auto">
+                          <a class="btn btn-outline-info me-2 mb-2 text-white" id="addEpcButtonToServer">Submit</a>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <!-- Adders section-->
+                  <div class="accordion accordion-flush bg-transparent" id="addersAccordeon" >
+                    <div class="accordion-item">
+                      <div class="card rounded bg-transparent border-info mb-2">
+                        <h2 class="accordion-header" id="headingOne">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                            ADDERS
+                          </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapsed show" aria-labelledby="headingOne" data-bs-parent="#addersAccordeon">
+                          <div class="card-body bg-dark">
+                            <div id="adderRowContainer">
+                              <div class="row container mx-auto">
+                                <a class="btn btn-outline-info me-2 mb-2 text-white" id="saveAddersButton" style="display: none;">SAVE ADDERS</a>
+                              </div>
+                              <div class="row adderRow">
+                                <div class="table-responsive">
+                                  <table class="table align-middle shadow-sm table-dark border-info">
+                                    <thead >
+                                      <tr >
+                                        <th scope="col" class="bg-dark text-light border-info">Enter Adds No DFEE</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tbody>
+                                      <tr>
+                                          <th scope="row" id="addsNoDFEEAddress" class="bg-dark">Adds</th>
+                                          <th scope="row" id="addsNoDFEEAmount" class="bg-dark">Amount:</th>
+                                      </tr>
+                                    </tbody>
+                                    <tbody id="addersContainers">
+                                    </tbody>
+                                      <tr>
+                                          <td class="bg-dark"><a class="btn btn-outline-info me-2 mb-2 text-white" id="addAdderButtonNs">Add Adder</a></td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>  
+                              </div>
+                              
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- Location section-->
+                  <div class="accordion accordion-flush bg-transparent" id="locationAccordeon" >
+                    <div class="accordion-item">
+                      <div class="card rounded bg-transparent border-info mb-2">
+                        <h2 class="accordion-header" id="headingOne">
+                          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
+                            LOCATION
+                          </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapsed show" aria-labelledby="headingOne" data-bs-parent="#locationAccordeon">
+                          <div class="card-body bg-dark">
+                            <div id="locationrowContainer">
+                              <div class="row container mx-auto">
+                                <a class="btn btn-outline-info me-2 mb-2 text-white" id="saveLocationButton" style="display: none;">SAVE LOCATION</a>
+                              </div>
+                              <div class="row locationRow">
+                                <div class="table-responsive">
+                                  <table class="table align-middle shadow-sm table-dark border-info">
+                                    <thead >
+                                      <tr >
+                                        <th scope="col" class="bg-dark text-light border-info">Select Location</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tbody>
+                                      <tr>
+                                          <th scope="row" id="addsNoDFEEAddress" class="bg-dark">State</th>
+                                          <th scope="row" id="addsNoDFEEAmount" class="bg-dark">Region</th>
+                                      </tr>
+                                    </tbody>
+                                    <tbody id="locationContainers">
+                                    </tbody>
+                                      <tr>
+                                          <td class="bg-dark"><a class="btn btn-outline-info me-2 mb-2 text-white" id="addLocationButtonNs">Add Location</a></td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                </div>  
+                              </div>
+                              
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End installer location-->
+                </div>
+                <div class="col-12 col-md-6 grid grid-margin mx-auto overflow-hidden text-center">
+                    <div class="row  " id="installerCardsContainer">
+                    
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section id="viewInstallerListSection">
+
+          </section>
+			</div>
+
+			<!-- partial:../../partials/_footer.html -->
+			<footer class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small bg-dark text-light">
+				<p class="text-muted mb-1 mb-md-0">Copyright © 2022 <a target="_blank">Voltio</a>.</p>
+			</footer>
+			<!-- partial -->
+	
+		</div>
+	</div>
+
+	<!-- Custom js for this page -->
+  <script src="../js/bootstrap.js"></script>
+  <script type="module" src="../js/installerSection.js"></script>
+  <script src="../resources/sweetAlert.js"></script>
+	<!-- End custom js for this page -->
+
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="Voltio dashboard">
+
+	<title>Voltio Dashboard</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <!-- End fonts -->
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../styles/messages.css">
+  <link rel="stylesheet" href="../resources/sweetAlert.css">
+</head>
+<body>
+	<div class="main-wrapper bg-dark">
+
+    <div class="page-wrapper bg-dark">
+      <div class="page-content bg-dark " >
+          <!-- profile -->
+        <div class="row" id="profile" style="display: none;">
+          <div class="col-12 grid-margin">
+            <div class="card border-info">
+              <div class="position-relative">
+                <figure class="overflow-hidden mb-0 d-flex justify-content-center">
+                  <img src="https://drive.google.com/uc?export=download&id=1ju_ETZdAENRqyHN9PWAqC8wAqGNyo2sv"class="rounded-top" height="100" width="100%"alt="profile cover">
+                </figure>
+                <div class="d-flex  justify-content-between align-items-center position-absolute top-90 w-100 px-2 px-md-4 mt-n4">
+                  <div>
+                    
+                    <span class="h4 ms-3 p-3 text-light rounded-pill shadow" id="usernameTextW" >USERNAME</span>
+                  </div>
+                  <div class="d-none d-md-block">
+                    <button class="btn btn-primary btn-icon-text" id="openEditProfileView">
+                      <i data-feather="edit" class="btn-icon-prepend fa-solid fa-user-pen " ></i>Edit profile
+                    </button>
+                  </div>
+
+                </div>
+              </div>
+              <div class="d-flex justify-content-center p-3 bg-dark rounded-bottom">
+                <ul class="d-flex align-items-center m-0 p-0 bg-dark">
+                  <li class="d-flex align-items-center active">
+                    <i class="me-1 icon-md text-primary" data-feather="columns"></i>
+                    <a class="pt-1px d-none d-md-block text-primary text-light" href="#">Projects</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="row profile-body bg-dark">
+          <div class="col">
+          <div class="d-block col-lg-11 mb-5 col-md-12 col-sm-12" >
+            <div class="card rounded bg-transparent border-info ">
+              <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <h6 class="card-title mb-0 text-light mb-2">Dashboard</h6>
+                </div>
+                <div class="row">
+                  <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
+                    <div class="card rounded bg-transparent border-info mb-5">
+                      <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                          <h6 class="card-title mb-0 text-light mb-2">Roof sales</h6>
+                        </div>
+                        <div class="row">
+                          <div id="monthlyChartSection">
+                          </div>
+                        </div>
+                      </div>
+                    </div> <!-- To Do card end -->
+                  </div>
+                  <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
+                    <div class="card rounded bg-transparent border-info mb-5">
+                      <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                          <h6 class="card-title mb-0 text-light mb-2">Roof Leads created</h6>
+                        </div>
+                        <div class="row">
+                            <div id="teamSalesChartSection"></div>
+                        </div>
+                      </div>
+                    </div> <!-- In Progress card end -->
+                  </div>
+                  <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
+                    <div class="card rounded bg-transparent border-info">
+                      <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                          <h6 class="card-title mb-0 text-light mb-2">Leader Board</h6>
+                        </div>
+                        <div class="row">
+                            <div id="leaderBoardChartSection"></div>
+                        </div>
+                      </div>
+                    </div> <!-- Completed card end -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- project task  wrapper start -->
+          <div class="d-block col-lg-11 mb-5 col-md-12 col-sm-12" >
+            <div class="card rounded bg-transparent border-info " name="hideWhenRep"  id="adminTaskCard">
+              <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <h6 class="card-title mb-0 text-light mb-2">Project Tasks <p>
+                    <a class="btn btn-outlined-info text-info fst-italic text-decoration-underline rolAdmin" style="display: none;" id="viewAllTasksButton" > ..view all tasks </a> 
+                    <a class="btn btn-outlined-info text-info fst-italic text-decoration-underline" id="viewMyTasksButton" > ..view my tasks </a>
+                  </p> </h6>
+                </div>
+                <div class="row">
+                  <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
+                    <div class="card rounded bg-transparent border-primary mb-5">
+                      <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                          <h6 class="card-title mb-0 text-light mb-2">To Do</h6>
+                        </div>
+                        <div class="row">
+                          <div id="toDoAdminData">
+                            <!-- <div class="row align-items-center border-bottom py-2 custom-button mb-2 border-info messageRow" 
+                              data-bs-toggle="modal" data-bs-target="#addNewTaskModal"
+                              data-id="V-11"
+                              data-name="JAVIER NEAVES"
+                              data-subtitle="Pending taks"
+                              data-description="This is a pending task description"
+                              data-duedate='05/25/2023 00:28:21'
+                              data-assignedTo="neaves@voltio.us"
+                              data-creationDate="06/07/2023"
+                              data-taskStatus="To Do">
+                              <div class="col-4">
+                                <p>V-11</p>
+                              </div>
+                              <div class="col-8">
+                                <p>Javier Neaves</p>
+                              </div>
+                            </div>
+                            <div class="row align-items-center border-bottom py-2 custom-button mb-2 border-info messageRow" 
+                              data-bs-toggle="modal" data-bs-target="#addNewTaskModal"
+                              data-id="V-10"
+                              data-name="">
+                              <div class="col-4">
+                                <p>V-10</p>
+                              </div>
+                              <div class="col-8">
+                                <p>Javier Neaves</p>
+                              </div>
+                            </div> -->
+                          </div>
+                        </div>
+                      </div>
+                    </div> <!-- To Do card end -->
+                  </div>
+                  <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
+                    <div class="card rounded bg-transparent border-warning mb-5">
+                      <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                          <h6 class="card-title mb-0 text-light mb-2">In progress</h6>
+                        </div>
+                        <div class="row">
+                            <div id="inProgressAdminCardData"></div>
+                        </div>
+                      </div>
+                    </div> <!-- In Progress card end -->
+                  </div>
+                  <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
+                    <div class="card rounded bg-transparent border-success">
+                      <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                          <h6 class="card-title mb-0 text-light mb-2">Done</h6>
+                        </div>
+                        <div class="row">
+                            <div id="doneAdminCardData"></div>
+                        </div>
+                      </div>
+                    </div> <!-- Completed card end -->
+                  </div>
+                </div>
+              </div>
+            </div> <!-- task card end -->
+          </div>
+          <!-- project task  wrapper end -->
+
+          <!-- rep task  wrapper start -->
+          <div class="d-none col-lg-11 mb-5 col-md-12 col-sm-12">
+            <div class="card rounded bg-transparent border-info">
+              <div class="card-body">
+                <div class="d-flex align-items-center justify-content-between mb-2">
+                  <h6 class="card-title mb-0 text-light mb-2">Rep Tasks <a class="btn btn-outlined-info text-info fst-italic text-decoration-underline" data-bs-toggle="modal" data-bs-target="#addNewTaskModalRep" > ..add new task </a> </h6>
+                </div>
+                <div class="row">
+                  <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
+                    <div class="card rounded bg-transparent border-primary mb-5">
+                      <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                          <h6 class="card-title mb-0 text-light mb-2">To Do</h6>
+                        </div>
+                        <div class="row">
+                          <div id="toDoRepData"></div>
+  
+                        </div>
+                      </div>
+                    </div> <!-- To Do card end -->
+                  </div>
+                  <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
+                    <div class="card rounded bg-transparent border-warning mb-5">
+                      <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                          <h6 class="card-title mb-0 text-light mb-2">In progress</h6>
+                        </div>
+                        <div class="row">
+                            <div id="inProgressRepCardData"></div>
+                        </div>
+                      </div>
+                    </div> <!-- In Progress card end -->
+                  </div>
+                  <div class="col-xl-4 col-lg-12 col-md-12 col-sm-12">
+                    <div class="card rounded bg-transparent border-success">
+                      <div class="card-body">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                          <h6 class="card-title mb-0 text-light mb-2">Done</h6>
+                        </div>
+                        <div class="row">
+                            <div id="doneRepCardData"></div>
+                        </div>
+                      </div>
+                    </div> <!-- Completed card end -->
+                  </div>
+                </div>
+              </div>
+            </div> <!-- task card end -->
+          </div>
+          <!-- rep task  wrapper end -->
+
+          </div>
+        </div>
+        <div class="row bg-dark" style="display: none;">
+          <div class="container">
+            <div class="card bg-dark text-light">
+              <div class="card-body bg-dark text-light" >
+                <h5 class="card-title">Online users</h5>
+                <div id="usersOnlineContainer">
+                  
+                </div>
+                
+              </div>
+            </div>
+          </div>
+        </div>
+			</div>
+
+			<!-- partial:../../partials/_footer.html -->
+			<footer class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small bg-dark text-light">
+				<p class="text-muted mb-1 mb-md-0">Copyright © 2023 v2.2.03 <a target="_blank">Voltio</a>.</p>
+			</footer>
+			<!-- partial -->
+	
+		</div>
+	</div>
+
+	
+  <!-- Modal -->
+<div class="modal fade mt-5" id="addNewTaskModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" 
+     aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-black text-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id=" ">Tasks</h5>
+      </div>
+      <div class="modal-body">
+        <div class="card rounded bg-dark bg-gradient border-info text-light mb-4">
+          <div class="card-header">
+            <input type="text" class="form-control bg-dark text-light mb-2" id="taskTitleInput" placeholder="title">
+            <input type="text" class="form-control bg-dark text-light" id="taskVoltioIdInput" placeholder="Voltio Id" readonly>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title mb-2">Task subtitle</h5>
+            <input type="text" class="form-control bg-dark text-light mb-2" id="taskSubtitleInput" placeholder="sub-title">
+            
+            <div class="mb-3">
+              <label for="taskDescriptionInput" class="form-label">Description and details of the current tasks</label>
+              <textarea class="form-control bg-dark text-light mb-2" id="taskDescriptionInput" rows="3"></textarea>
+            </div>
+                                        
+            <p class="text-start mb-2">Due date:</p>
+            <input type="date" class="form-control bg-dark text-light mb-2" id="taskDueDateInput" placeholder="date">
+
+            <label class="text-start mb-2">Assigned to:</label>
+            <select class="form-select bg-dark text-light mb-2" id="taskAssignedTo">
+              
+            </select>
+            <label class="text-start mb-2">Status:</label>
+            <select class="form-select bg-dark text-light mb-3" id="taskStatus">
+              <option >To Do</option>
+              <option >In Progress</option>
+              <option >Done</option>
+            </select>
+            <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" id="addNewTaskModalOpenButton">Close</button>
+            <button type="button" class="btn btn-outline-primary" id="saveTaskModal" data-bs-dismiss="modal">Save changes</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- Modal -->
+<div class="modal fade" id="addNewTaskModalRep" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content bg-black text-light">
+      <div class="modal-header">
+        <h5 class="modal-title" id=" ">Rep Tasks</h5>
+      </div>
+      <div class="modal-body">
+        <div class="card rounded bg-dark bg-gradient border-info text-light mb-4">
+          <div class="card-header">
+            <p class="mb-2"> Task Title</p>
+            <input type="text" class="form-control bg-dark text-light" id="taskTitleInputRep" placeholder="title">
+          </div>
+          <div class="card-body">
+            <h5 class="card-title mb-2">Task subtitle</h5>
+            <input type="text" class="form-control bg-dark text-light mb-2" id="taskSubtitleInputRep" placeholder="sub-title">
+            
+            <div class="mb-3">
+              <label for="taskDescriptionInput" class="form-label">Description and details of the current tasks</label>
+              <textarea class="form-control bg-dark text-light mb-2" id="taskDescriptionInputRep" rows="3"></textarea>
+            </div>
+                                        
+            <p class="text-start mb-2">Due date:</p>
+            <input type="date" class="form-control bg-dark text-light mb-2" id="taskDueDateInputRep" placeholder="date">
+
+          </div>
+         </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-danger" data-bs-dismiss="modal" id="addNewTaskModalOpenButtonRep">Close</button>
+        <button type="button" class="btn btn-outline-primary" id="saveTaskModalRep" data-bs-dismiss="modal">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="../resources/sweetAlert.js"></script>
+<script type="module" src="../js/adminAccess.js"></script>
+<script type="module" src="../js/bootstrap.js"></script>
+<script type="module" src="../js/dashboard.js"></script>
+<script type="module" src="../components/chart.js"></script>
+<script type="module" src="../js/dashboardChart.js"></script>
+<script type="module" src="../js/dashboardChartLeads.js"></script>
+<script type="module" src="../js/dashboardChartReps.js"></script>
+</body>
+</html>

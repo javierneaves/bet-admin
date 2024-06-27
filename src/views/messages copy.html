@@ -1,0 +1,184 @@
+
+
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="description" content="Voltio dashboard">
+  <link rel="stylesheet" href="../style.css">
+  <link rel="stylesheet" href="../styles/messages.css">
+	<title>Voltio Dashboard</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+  <!-- End fonts -->
+  
+</head>
+<body>
+  <div id="container">
+    <div class="main-wrapper bg-dark">
+
+
+      <!-- partial -->
+    
+      <div class="page-wrapper bg-dark">
+        <div class="page-content">
+          <!-- seccion de mensajes-->
+            <section id="chatSection">
+              <div class="container-fluid">
+                <div class="row">
+                  <!-- Contenido del primer div -->
+                  <div class="col-12 col-sm-4 col-md-4 col-lg-4 d-sm-block personas sliding-div-personas" id="listMessagesSection">
+                    <!-- Columna de personas -->
+  
+                    <!-- Inicia botom de chat -->
+                    <div class="container mb-2" id="newChatButton" style="display: none;">
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="row align-items-center border-bottom py-2 newChat-button" >
+                            <span class="material-symbols-outlined col-2">
+                              add
+                            </span>
+                            <h3 class="col-10">New chat</h3>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="container mb-2" id="searchChatButton" >
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="row align-items-center border-bottom py-2">
+                            <div class="col-2">
+                              <span class="material-symbols-outlined">search</span>
+                            </div>
+                            <div class="col-10">
+                              <input type="text" class="form-control taller-input border-info" placeholder="Search..." id="searchLeadText">
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- Termina Boton de chat -->
+                    <div id="messagesListContainer"></div>
+                    <!-- Inicia Mensaje 
+                    <div class="container messageRow" data-id="12346">
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="row align-items-center border-bottom py-2 custom-button" >
+                            <div class="col-2">
+                              <div class="circle">JN</div>
+                            </div>
+                            <div class="col-10">
+                              <h4 class="userName">Javier Neaves</h4>
+                              <p class="messagePreview">Último mensaje escrito</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    Termina Mensaje -->
+                    
+                  </div>
+                  <!-- Contenido del segundo div -->
+                  <div class="col-12 col-sm-8 col-md-8 col-lg-8 mensajes sliding-div" id="detailedMessagesSection" style="display: none;">
+                    <!-- Columna de mensajes -->
+                    <div class="container">
+                      <div class="row">
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="row align-items-center border-bottom py-2 mb-4 custom-button" >
+                              <div class="col-2">
+                                <div class="">
+                                  <button class="btn btn-outline-info border-0" id="backToMessagesListBtn">
+                                    <span class="material-symbols-outlined">
+                                      arrow_back_ios
+                                    </span>
+                                  </button>
+                                </div>
+                              </div>
+                              <div class="col-2">
+                                <div class="circle" id="chatTitleVoltioId"></div>
+                              </div>
+                              <div class="col-8">
+                                <h6 id="chatTitleLeadname" class="p-4 chatTitleText"></h6>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-12">
+                          <div class="input-section mb-5">
+                            <div class="row align-items-center">
+                              <div class="col-10">
+                                <input type="text" class="form-control taller-input border-info" placeholder="Senda a message." id="textBox">
+                              </div>
+                              <button class="btn btn-outline-info col-2 btn-lg" id="sendMessageBotton">
+                                <span class="material-symbols-outlined ">
+                                  send
+                                </span>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div id="messagesDetailContainer"></div>
+                      <!-- Ejemplos de mensajes 
+                      <div class="container mb-2 receiverMessageBox text-box col-10 chat">
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="">
+                              <h3 class="chat-title">Javier Neaves</h3>
+                              <p class="chat-message">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                              <p class="chat-date">01/01/2023 18:50</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      -->
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+            </section>
+          <!--termina seccion de mensajes-->
+        </div>
+  
+        <!-- partial:../../partials/_footer.html -->
+        <footer class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small bg-dark text-light">
+          <p class="text-muted mb-1 mb-md-0">Copyright © 2022 <a target="_blank">Voltio</a> v2.001.001.</p>
+        </footer>
+        <!-- partial -->
+    
+      </div>
+    </div>
+  </div>
+	
+  <style>
+    #loading {
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+  </style>
+  <div id="loading" class="d-flex justify-content-center align-items-center invisible">
+    <div class="spinner-border text-white" style="width: 3rem; height: 3rem;" role="status">
+       <span class="sr-only"></span>
+    </div>
+  </div>
+	<!-- Custom js for this page -->
+  
+  <script src="../js/bootstrap.js"></script>
+  <script type="module" src="../js/messages.js"></script>
+  <script src="../resources/sweetAlert.js"></script>
+  <script src="../main.js"></script>
+    
+	<!-- End custom js for this page -->
+
+</body>
+</html>
+

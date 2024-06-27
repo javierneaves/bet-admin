@@ -1,0 +1,139 @@
+projectUsage
+totalYearlyPayment
+designArea
+proyectInstaller
+projectPanelsNumber
+projectAddOnSystem
+ProjectCustomerCashBack
+addersData (Objeto)
+projectCmsMod
+solarPanelLocation
+roofCondition
+roofingMaterial
+projectElectricPanelBrand
+
+Sig pasos:
+v2.2.09
+/* 2.09 Se completan los calculos de roof, se activa el clear, se guarda en firestore y lee desde firestore
+/* 2.08 Calculos correctos en roof, solo falta fix 2 y moneda 
+/* 2.07 Inician las formulas de la calculadora, se basa en la tabla de excel
+/* 2.06 Formato a los campos dde moneda 
+/* 2.05 Se crean los input para la calculadora, aun no tiene codigo js
+/* 2.04 Las tareas se hacen desde messages, actualmente solo filtra roofing. 
+/* 2.03 Tercer grafica que muestre todos los users que tienen leads POR USUARIO
+/* 2.02 Se agrega menu roofing y se oculta add new lead para solar, los mensajes se desactiva el acceso a solar leads
+/* 53. Se crea el menu de Roofing y se implementa las secciones para gregar nuevo lead de roofingMaterial
+xx. Se actualiza la grafica para obtener los resultados mensuales desde firestore / falta ordenar por mes
+XX. charts for leaderboard, se pueden agregar 3 columnas, preguntar cuales necesitan.
+
+Dashboard: Overview of deals, news, leaderboard, new stuff.
+Members: Basic info, payrate
+Leads (Solar/Roof): Customer information, Picture upload, Ubill upload, Rep notes. (Chat within the lead with reps?) Credit info.
+Projects: (Solar/Roof): Basic Customer info, Project info, financing information, picture Upload (Calcs, design, contracts, ETC)
+Commission Tab: Deals with CMS to be paid out, inventory debt, invoice creation.
+Calculators:
+    
+Roofing Calculator
+Solar Calculator
+Commission Calculators
+EPC Tab: Basic installer information, redline, adders (Prices), financing options, contact information.
+Resources tab: anything that helps with processes.
+Portals/Accounts tab: all accounts used for operations (Password Protected)
+Inventory: Items, cost, input/output, balances for reps
+
+There needs to be a way of linking certain tabs and certain information.
+    
+xx. que los mensajes se vean solo por equipo 
+xx. reps nomas que vean donde son duenos de sus tratos para los mensajes
+xx. mostrar el nombre y el mail de todos los reps/users que se han registrado en el app y que tengan el estatus de active
+xx. mostrar imagenes en el chat 
+xx. Y para el chat de leads, voy a agregar un pequeño boton para que le den click a resuelto o leído
+xx. en users falta un botton para activarlos o desactivarlos
+
+*/    revisar por que no se han agregado los adders al lead
+*/ 1. Habilitar el boton para que guarde la calculadora y que se pueda elegir la principal y las secundarias.
+*/ 2. Habilitar la sección para subir fotos a Drive y poder traerlas al abrir el proyecto.
+*/ 3. Quitar los cuadros no necesarios */
+*/ 4. Cambiar el menu para que salga como pestañas y así se separen las secciones */
+*/ 5. Hacer el formato del menú de leads y proyectos con los filtros necesarios. */
+*/ 6. Agregar la sección para editar los prestamos por instaladora
+*/ 7. Guardar calculadora en firebase
+*/ 8. Leer los datos de firebase y guardarlos en un object para obtener la calculadora
+*/ 9. Subir imagenes a Drive
+*/ 10. hacer que las imagenes se guarden con el voltioId en drive
+*/ 11. hacer que las imagenes se guarden con el voltioId en firebase junto con el link en una collection llamada 
+*/ 12. asignar un dataset al boton borrar imagen para que al darle click, elimine esa imagen de firebase(*No se podra borrar desde el sistema)
+*/ 13. Al cargar los datos de la caluladora no se estan sumando los adders
+*/ 15. ProjectInfo debe ser solo vista por el administrador general
+*/ 16. Drop down del closer y setter al agregar un nuevo lead
+*/ 17. Drop down del closer y setter al editar lead
+*/ 18. Al actualizar el installer se deb tomar sus valores de redline y ver donde se incluye esta opcion
+*/ 19. Crear la funcion para agregar los credit links y que los traiga al abrir el proyecto
+*/ 20. Guardar el financial y su redline en la base de datos
+*/ 21. Hacer el calculo al cambiar el financial dropdown
+*/ 22. Traer el financial al abrir el proyecto y ejecutar la calculadora, tambien se debe obtener el redline.
+*/ 23. spiner al cargar los datos de los leads 
+*/ 24. agregar closer y setter a la tabla 
+*/ 25. Agregar systemSize a la tabla de leads
+*/ 26. credit links, muestra los links al dar refresh, se debe ver como tarjetas, debe tener un link para ir a la pagina
+*/ 27. Crear el template de los mensajes
+*/ 29. Error al actualizar la propuesta, cuando no se ha guardado el proyecto, hay que crear el proyecto en la collection projectDetails para poder editarlo despues.
+*/ 28. Un boton para crear nuevo chat, 
+*/ 30. fecha y hora de los mensajes
+*/ 34. Que se vaya al detalle del lead al hacer click a un boton
+*/36. Más bien un botón que convierta cualquier mensaje en task, Y tal vez que diga task complete, o not complete, O pending
+    */ 36.1 La estrella convierte en task, falta que la secc messages cargue la estrella 
+       */ 36.2 Cargue el mensaje modificado desde tasks
+*/ 37. como sabes si los mensajes son de leads o projectos? Se tiene que hacer el cambio de lead a proyect, Si el Proyect type no es Lead entonces es Proyect o Canceled Proyect
+*/ 39. LA SECCION DE MENSAJES SE DEBE MOVER A SEARCH LEAD Y HACER UNA FUNCION DONDE SI EL E.TARGET SEA MENSAJES, SE MUESTRE ESA SECCION
+*/ 43. y tal vez algo para poner la importancia // se agrega una estrella para marcar importancia y se crea tarea
+*/ 44. Dashboard, manejo de tareas, crear, editar, asignar a un rep
+   */ 44.1 Drop down que cargue la lista de admins o reps // export function
+*/ 45. se toman todos los dataset y se guardan en firebase, falta agregar el id de esa coll para borrar registro
+*/ 46. Dos botones en dashboard para ver mis tareas y las de todos (solo lo deben ver los admin)
+*/ 47. Se actualiza el statusSection para que al guardar el proposal status al 'Sold' se haga project, al hacer esto se muestra en la tabla tambien
+*/ 48. Al cambiar el status a sold se debe agregar el contract date, en caso de cambiarlo a otro estatus se debe borrar la contract date
+*/ 49. Al dar click a view project se debe mostrar el Contract Date en lugar del Creation Date 
+*/ 50. Se inclye el HTML del login en el div app para que cargue siempre, se incluye el codigo para el chartjs y agrego las columnas del dashboard para las graficas
+*/ 51. Para el consecutivo, en lugar de crear un registro, se puede solo editar el unico registro.
+
+*/ formatted date:
+    const timestamp =  r[7] ;
+    const dateNew = new Date(timestamp.seconds * 1000 + Math.floor(timestamp.nanoseconds / 1000000));
+    const date = new Date (r[7] * 1000)    
+    let month = dateNew.getMonth() < 10 ? '0'+ (dateNew.getMonth() + 1): (dateNew.getMonth()+ 1)
+    let day = dateNew.getDate() < 10 ? '0' + dateNew.getDate() : dateNew.getDate()
+    const formattedDate = `${month}/${day}/${dateNew.getFullYear()}`;
+
+let messageRow = document.querySelectorAll('.messageRow');
+    
+    messageRow.forEach(function(item) {
+        item.addEventListener('click', function (e) {
+            if (e.target.closest('.messageRow')) {
+                voltioId = item.dataset.id
+                leadName = item.dataset.name
+                getDetailMessages()
+                listMessagesSection.style.display = 'none'
+                detailedMessagesSection.style.display = 'block'             
+              }
+        });
+    });
+
+
+// Agrega el evento de escucha al campo de entrada
+    roofQuoteNumberInput.addEventListener('blur', function (event) {
+      // Obtén el valor del campo de entrada
+      const inputNumber = event.target.value;
+      console.log(inputNumber);
+      
+      // Formatea el valor como una cantidad de moneda
+      const formattedNumber = Number(inputNumber).toLocaleString('en-US', {
+        style: 'currency',
+        currency: 'USD'
+      });
+      console.log(formattedNumber);
+      
+      // Actualiza el contenido del campo de entrada con el valor formateado
+      roofQuoteNumberInput.value = formattedNumber;
+
+    });

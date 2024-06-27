@@ -1,0 +1,148 @@
+<!DOCTYPE HTML>
+<!--
+
+Francisco Macías para Voltio 
+-->
+<html>
+	<head>
+		<title>BET ADMIN</title>
+		<link
+		  rel="stylesheet"
+		  href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
+		/>
+		<link
+		  rel="stylesheet"
+		  type="text/css"
+		  href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+		/>
+		<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 0,
+        'opsz' 48
+      }
+      </style>
+		<meta charset="utf-8" />
+		<meta
+		  name="viewport"
+		  content="width=device-width, initial-scale=1, user-scalable=no"
+		/>
+		<link rel="stylesheet" href="./css/main.css" />
+		<script src="https://kit.fontawesome.com/c259cdd56c.js" crossorigin="anonymous"></script>
+		
+	  </head>
+	<body class="is-preload">
+		<div id="page-wrapper">
+
+			<!-- Header -->
+				<header id="header">
+					<nav id="nav">
+						<ul id="loginButtonsContainer">
+							<li><a href="index.html">Inicio</a></li>
+							<li>
+								<a href="#" class="icon solid"><span class="material-symbols-outlined">
+									account_balance_wallet
+									</span> Talero</a>
+								<ul>
+									<li><a href="reservacion.html">Calendario</a></li>
+									
+									<li><a href="contacto.html">Tickets</a></li>
+								</ul>
+							</li>
+							
+						</ul>
+									
+					</nav>
+				</header>
+
+			<!-- Main -->
+				<section id="main" class="container medium">
+					<header>
+						<h2>INGRESAR</h2>
+						<p>Servicio exclusivo para nuestros usuarios registrados.</p>
+					</header>
+					<div class="box">
+						<form>
+							<div class="row gtr-50 gtr-uniform">
+								<div class="col-12">
+									<input type="text" name="user" id="user" value="" placeholder="Usuario" />
+								</div>
+                                <div class="col-12">
+									<input type="password" name="password" id="password" value="" placeholder="password" />
+								</div>
+								
+								<div class="d-grid gap-2 col-6 mx-auto">
+									<button type="button" class="btn btn-secondary btn-lg" id="signInButton">Ingresar</button>
+									<button type="button" class="btn btn-primary google-btn" style="background-color: #4285f4;" id="googleButton">
+										<i class="fa-brands fa-google p-2"> </i>
+										   Ingresar con google
+									</button>
+								</div>
+                           <li><a href="#" id="forgotPasswordButton">Olvide mi password</a></li>
+                         <br />
+                           <li><a href="registro.html">Inicia tu registro aquí</a></li>
+							</div>
+						</form>
+					</div>
+				</section>
+
+			<!-- Footer -->
+				<footer id="footer">
+					<ul class="copyright">
+						<li>&copy; Todos los derechos reservados.</li>
+					</ul>
+				</footer>
+
+		</div>
+		<div class="modal fade" id="forgotPassword" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="myModal" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+			  <div class="modal-content">
+				<div class="modal-header">
+				  <h5 class="modal-title">Olvidó la contraseña?</h5>
+				  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+				  </button>
+				</div>
+				<form id="formularioPassword">
+				  <div class="modal-body">
+					  <div class="form-floating mb-3">
+						<div class="input-group mb-3">
+							<span class="input-group-text" for="emailToRecover">email:</span>
+							<input type="email" class="form-control" placeholder="ingresa tu email.." aria-label="email" aria-describedby="email" id="emailToRecover">
+						</div>
+					  </div>
+				  </div>
+				  <div class="modal-footer">
+					  <button class="btn btn-primary" id="getPassword" style="color: antiquewhite; background-color: violet; border-color: violet;">Obtener contraseña</button>
+				  </div>
+				</form>
+				 
+			  </div>
+			</div>
+		  </div>
+
+		<!-- Scripts -->
+		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+		<script
+		  type="text/javascript"
+		  src="https://cdn.jsdelivr.net/npm/toastify-js"
+		></script>
+		<script src="./js/jquery.min.js"></script>
+		<script src="./js/jquery.dropotron.min.js"></script>
+		<script src="./js/jquery.scrollex.min.js"></script>
+		<script src="./js/breakpoints.min.js"></script>
+		<script src="./js/util.js"></script>
+		<script src="./js/main.js"></script>
+		
+		<script type="module" src="./main.js"></script>
+		<script type="module" src="./util.js"></script>
+		<script type="module" src="./app/googleLogin.js"></script>
+		<script type="module" src="./app/signinForm.js"></script>
+		<script src="./main.js" type="module"></script>
+		<script src="./js/sweetAlert.js"></script>
+		<script src="./app/forgotPassword.js" type="module"></script>
+
+	</body>
+</html>

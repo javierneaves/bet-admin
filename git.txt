@@ -1,0 +1,9 @@
+20/12/2022
+12:09
+28/12/2022
+03:12
+checar camaras y servicio para que sea lo mismo que la chica que trabaja
+dashboard de administrador
+Tabla de empledos, alta, baja, edicion.
+Tabla de sucesos, hora de entrada, hora de salida, comentarios, nombre del empleado.
+Tabla de evidencias de los servicios realizados.
