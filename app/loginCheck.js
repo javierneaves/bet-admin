@@ -12,7 +12,7 @@ onAuthStateChanged(auth, async(user) => {
         username = user.displayName
         return
     } else {
-        Ght2TMxfHta1NMYFcwNFvDZ8HvI2
+        
         if(currentHostname == '/dashboard.html'){
            // window.open(webDomain + '/index.html', '_self');
         }
