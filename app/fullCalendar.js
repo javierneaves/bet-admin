@@ -31,7 +31,13 @@ export const calendarioUpdate = document.addEventListener('DOMContentLoaded', as
                 userAuth: '2tFOCkpC55aSE1iPaidAikhyBUd2',
                 start: '2024-06-26',
                 calendarInfo: {'cliente': 'Ana'},
-                extendedProps: { 'detalle1': 'valor1', 'detalle2': 'valor2' } // Datos adicionales
+                extendedProps: {    'CantidadApuestas': 'Cantidad de apuestas', 
+                                    'TotalDineroApostado': '$566', 
+                                    'BonoLiberado': '$1,000', 
+                                    'PrimerDeposito': '$1,000', 
+                                    'BonoHechoPrimerDeposito': '$1200', 
+                                    'BonosRecurrentes': '$136'
+                                } 
               },
               {
                 userAuth: '2tFOCkpC55aSE1iPaidAikhyBUd2',
@@ -153,28 +159,312 @@ export const calendarioUpdate = document.addEventListener('DOMContentLoaded', as
                         return info.date;
                     }, */
                     eventClick: function (info) {
-                      console.log(info);
                         const event = info.event;
                         const eventTitle = event.title;
                         const eventStart = event.start;
                         const eventEnd = event.end;
                         const eventColor = event.backgroundColor;
                         const extendedProps = event.extendedProps;
-                        console.log(extendedProps);
                         // Display event details in the modal
                         const modalTitle = document.getElementById('titulo');
                         const modalBody = document.getElementById('modalBody');
 
                         modalTitle.textContent = eventTitle;
                         modalBody.innerHTML = `
-                            <p><strong>Fecha de inicio:</strong> ${eventStart.toLocaleString()}</p>
+                            <div class="row mb-3">
+                            <h3 class="col-md-4 col-sm-12"><strong>Cliente:</strong> ${eventTitle}</h3>
+                            <h3 class="col-md-4 col-sm-12"><strong>Fecha:</strong> ${eventStart.toLocaleString()}</h3>
+                            </div>
                             ${eventEnd ? `<p><strong>Fecha de fin:</strong> ${eventEnd.toLocaleString()}</p>` : ''}
-                            <p><strong>Color:</strong> <span style="color:${eventColor}">${eventColor}</span></p>
-                            <p><strong>Detalles adicionales:</strong></p>
-                            <pre>${extendedProps.detalle1}</pre>
-                        `;
+                            <!--<pre>${extendedProps.CantidadApuestas}</pre>-->
+                            <div class="container mt-5">
+                                <div class="accordion" id="accordionExample">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                        <button
+                                            class="accordion-button"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#collapseOne"
+                                            aria-expanded="true"
+                                            aria-controls="collapseOne"
+                                        >
+                                            Journal
+                                        </button>
+                                        </h2>
+                                        <div
+                                        id="collapseOne"
+                                        class="accordion-collapse collapse show"
+                                        data-bs-parent="#accordionExample"
+                                        >
+                                        <div class="accordion-body">
+                                            <section>
+                                            <!-- Row 1 -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-4 col-sm-12">
+                                                <label for="pantallazo" class="form-label"
+                                                    >Pantallazo + Telegram</label
+                                                >
+                                                <input
+                                                    type="file"
+                                                    class="form-control"
+                                                    id="pantallazo"
+                                                    name="pantallazo"
+                                                    accept="image/*"
+                                                />
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                <label for="fechaEvento" class="form-label"
+                                                    >Fecha del evento</label
+                                                >
+                                                <input
+                                                    type="date"
+                                                    class="form-control"
+                                                    id="fechaEvento"
+                                                    name="fechaEvento"
+                                                />
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                <label for="mercado" class="form-label">Mercado</label>
+                                                <select class="form-select" id="mercado" name="mercado">
+                                                    <option value="opcion1">Opción 1</option>
+                                                    <option value="opcion2">Opción 2</option>
+                                                </select>
+                                                </div>
+                                            </div>
 
+                                            <!-- Row 2 -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-4 col-sm-12">
+                                                <label for="cantidadApostada" class="form-label"
+                                                    >Cantidad apostada</label
+                                                >
+                                                <input
+                                                    type="number"
+                                                    class="form-control"
+                                                    id="cantidadApostada"
+                                                    name="cantidadApostada"
+                                                    step="0.01"
+                                                />
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                <label for="cuota" class="form-label">Cuota</label>
+                                                <input
+                                                    type="number"
+                                                    class="form-control"
+                                                    id="cuota"
+                                                    name="cuota"
+                                                    step="0.01"
+                                                />
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                <label for="cuotaMinima" class="form-label">Cuota Minima</label>
+                                                <input
+                                                    type="number"
+                                                    class="form-control"
+                                                    id="cuotaMinima"
+                                                    name="cuotaMinima"
+                                                    step="0.01"
+                                                />
+                                                </div>
+                                            </div>
+
+                                            <!-- Row 3 -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-4 col-sm-12">
+                                                <label for="estadoPartido" class="form-label"
+                                                    >Estado del partido</label
+                                                >
+                                                <select
+                                                    class="form-select"
+                                                    id="estadoPartido"
+                                                    name="estadoPartido"
+                                                >
+                                                    <option value="enCurso">En curso</option>
+                                                    <option value="finalizado">Finalizado</option>
+                                                </select>
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                <label for="balance" class="form-label">Balance</label>
+                                                <input
+                                                    type="number"
+                                                    class="form-control"
+                                                    id="balance"
+                                                    name="balance"
+                                                    step="0.01"
+                                                />
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                <label for="saldoApostado" class="form-label"
+                                                    >Saldo apostado</label
+                                                >
+                                                <input
+                                                    type="number"
+                                                    class="form-control"
+                                                    id="saldoApostado"
+                                                    name="saldoApostado"
+                                                    step="0.01"
+                                                />
+                                                </div>
+                                            </div>
+
+                                            <!-- Row 4 -->
+                                            <div class="row mb-3">
+                                                <div class="col-md-4 col-sm-12">
+                                                <label for="nombreBookie" class="form-label">Nombre Bookie</label>
+                                                <select class="form-select" id="nombreBookie" name="nombreBookie">
+                                                    <option value="bookie1">Bookie 1</option>
+                                                    <option value="bookie2">Bookie 2</option>
+                                                </select>
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                <label for="limitacion" class="form-label">Limitacion</label>
+                                                <select class="form-select" id="limitacion" name="limitacion">
+                                                    <option value="true" style="color: red">True</option>
+                                                    <option value="false" style="color: green">False</option>
+                                                </select>
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                <label for="videoCasaLimitada" class="form-label"
+                                                    >Video casa limitada</label
+                                                >
+                                                <textarea
+                                                    class="form-control"
+                                                    id="videoCasaLimitada"
+                                                    name="videoCasaLimitada"
+                                                    rows="3"
+                                                ></textarea>
+                                                </div>
+                                                <div class="col-md-4 col-sm-12">
+                                                <label for="retiro" class="form-label">Retiro</label>
+                                                <input
+                                                    type="number"
+                                                    class="form-control"
+                                                    id="retiro"
+                                                    name="retiro"
+                                                    step="0.01"
+                                                />
+                                                </div>
+                                            </div>
+
+                                            <!-- Submit Button -->
+                                            <div class="mb-3">
+                                                <button type="button" class="btn btn-primary" id="agregarJournal">
+                                                Agregar
+                                                </button>
+                                            </div>
+                                            <!-- Table -->
+                                            <div class="table-responsive">
+                                                <table
+                                                class="table table-bordered mt-4"
+                                                id="resultTable"
+                                                style="display: none"
+                                                >
+                                                <thead>
+                                                    <tr>
+                                                    <th>Pantallazo + Telegram</th>
+                                                    <th>Fecha del evento</th>
+                                                    <th>Mercado</th>
+                                                    <th>Cantidad apostada</th>
+                                                    <th>Cuota</th>
+                                                    <th>Cuota Minima</th>
+                                                    <th>Estado del partido</th>
+                                                    <th>Balance</th>
+                                                    <th>Saldo apostado</th>
+                                                    <th>Nombre Bookie</th>
+                                                    <th>Limitacion</th>
+                                                    <th>Video casa limitada</th>
+                                                    <th>Retiro</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody id="resultTableBody"></tbody>
+                                                </table>
+                                            </div>
+                                            </section>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                        <button
+                                            class="accordion-button collapsed"
+                                            type="button"
+                                            data-bs-toggle="collapse"
+                                            data-bs-target="#collapseTwo"
+                                            aria-expanded="false"
+                                            aria-controls="collapseTwo"
+                                        >
+                                            Matched Betting
+                                        </button>
+                                        </h2>
+                                        <div
+                                        id="collapseTwo"
+                                        class="accordion-collapse collapse"
+                                        data-bs-parent="#accordionExample"
+                                        >
+                                        <div class="accordion-body">
+                                            <section>
+                                            <div class="table-responsive">
+                                                <table class="table table-bordered">
+                                                <thead>
+                                                    <tr>
+                                                    <th>Dia Apuesta</th>
+                                                    <th>Partido</th>
+                                                    <th>Dia Partido</th>
+                                                    <th>Tipo de Bono</th>
+                                                    <th>Bookie 1</th>
+                                                    <th>Apuesta</th>
+                                                    <th>Cuota 1</th>
+                                                    <th>Cant Apostada</th>
+                                                    <th>Bookie 2</th>
+                                                    <th>Apuesta</th>
+                                                    <th>Cuota 2</th>
+                                                    <th>Cant Apostada</th>
+                                                    <th>Estado</th>
+                                                    <th>Beneficio</th>
+                                                    <th>Comentarios</th>
+                                                    <th>Ganador</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <!-- Example row, add your data here -->
+                                                    <tr>
+                                                    <td>01/07/2024</td>
+                                                    <td>Partido 1</td>
+                                                    <td>02/07/2024</td>
+                                                    <td>Bono 1</td>
+                                                    <td>Bookie A</td>
+                                                    <td>Apuesta 1</td>
+                                                    <td>1.5</td>
+                                                    <td>100</td>
+                                                    <td>Bookie B</td>
+                                                    <td>Apuesta 2</td>
+                                                    <td>2.0</td>
+                                                    <td>150</td>
+                                                    <td>En curso</td>
+                                                    <td>50</td>
+                                                    <td>Sin comentarios</td>
+                                                    <td>Equipo A</td>
+                                                    </tr>
+                                                    <!-- Add more rows as needed -->
+                                                </tbody>
+                                                </table>
+                                            </div>
+                                            </section>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    </div>
+                        
+                            </div>
+                        `;
+                        
+                        const agregarJournal = document.getElementById('agregarJournal');
+                        agregarJournal.addEventListener('click', function (e) {
+                            mostrarConfirmacion()
+                        });
                         myModal.show();
+                                    
                     }
                 });
 
@@ -189,3 +479,60 @@ export const calendarioUpdate = document.addEventListener('DOMContentLoaded', as
         }
     });
 });
+
+function mostrarTabla() {
+    console.log('buttton presed');
+    const pantallazo = document.getElementById('pantallazo').value;
+    const fechaEvento = document.getElementById('fechaEvento').value;
+    const mercado = document.getElementById('mercado').value;
+    const cantidadApostada = document.getElementById('cantidadApostada').value;
+    const cuota = document.getElementById('cuota').value;
+    const cuotaMinima = document.getElementById('cuotaMinima').value;
+    const estadoPartido = document.getElementById('estadoPartido').value;
+    const balance = document.getElementById('balance').value;
+    const saldoApostado = document.getElementById('saldoApostado').value;
+    const nombreBookie = document.getElementById('nombreBookie').value;
+    const limitacion = document.getElementById('limitacion').value;
+    const videoCasaLimitada = document.getElementById('videoCasaLimitada').value;
+    const retiro = document.getElementById('retiro').value;
+
+    const tableBody = document.getElementById('resultTableBody');
+    const newRow = document.createElement('tr');
+
+    newRow.innerHTML = `
+        <td>${pantallazo}</td>
+        <td>${fechaEvento}</td>
+        <td>${mercado}</td>
+        <td>${cantidadApostada}</td>
+        <td>${cuota}</td>
+        <td>${cuotaMinima}</td>
+        <td>${estadoPartido}</td>
+        <td>${balance}</td>
+        <td>${saldoApostado}</td>
+        <td>${nombreBookie}</td>
+        <td style="color: ${limitacion === 'true' ? 'red' : 'green'};">${limitacion}</td>
+        <td>${videoCasaLimitada}</td>
+        <td>${retiro}</td>
+    `;
+
+    tableBody.appendChild(newRow);
+    document.getElementById('resultTable').style.display = 'table';
+}
+
+function mostrarConfirmacion() {
+    Swal.fire({
+        title: '¿Desea guardar la información en el Journal?',
+        showCancelButton: true,
+        confirmButtonText: 'OK',
+        cancelButtonText: 'CANCEL',
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Lógica para guardar la información
+            mostrarTabla()
+            Swal.fire('Guardado', '', 'success');
+        } else {
+            // Lógica para cancelar la acción
+            Swal.fire('Cancelado', '', 'error');
+        }
+    });
+}
