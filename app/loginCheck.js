@@ -72,10 +72,10 @@ export const loginCheck = user => {
         loginButtonsContainer.append(liIngresaAquiButton)
         loginButtonsContainer.append(liLogoutButton)
         liUserEnTitulo.appendChild(aUsuarioEnTitulo)
-        liUserEnTitulo.appendChild(aShoppingCart)
+        
        // liIngresaAquiButton.appendChild(aIngresaAquiButton)
         liLogoutButton.appendChild(aLogoutButton)
-        aShoppingCart.appendChild(spanIcon)
+        
         
         
 

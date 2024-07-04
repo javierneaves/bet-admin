@@ -1,66 +1,39 @@
-import {  getReservas } from './reservationAdmin.js'
-import { getContactos } from './contactoAdmin.js'
-import { getProductos } from './productAdminGetList.js'
-import {  } from './attendanceAdmin.js'
 
 //cancelarReserva,
-let productosTab = document.getElementById("productosTab")
-let reservasTab = document.getElementById("reservasTab")
-let contactoTab = document.getElementById("contactoTab")
-let asistenciaTab = document.getElementById('asistenciaTab');
+let casasDeApuestasTab = document.getElementById("casasDeApuestasTab")
+let depRetiTab = document.getElementById("depRetiTab")
+let clientesTab = document.getElementById('clientesTab');
 
-let productTabSection = document.getElementById("productTabSection")
-let reservasSection = document.getElementById("reservasSection")
-let contactoSection = document.getElementById("contactoSection")
-let asistenciaSection = document.getElementById('asistenciaSection');
+let casasDeApuestasSection = document.getElementById("casasDeApuestasSection")
+let depRetiSection = document.getElementById("depRetiSection")
+let clientesSection = document.getElementById('clientesSection');
 
+clientesTab.addEventListener("click", function () {
+    clientesTab.className = "nav-link active"
+    casasDeApuestasSection.className = "nav-link"
+    depRetiSection.className = "nav-link"
 
-productosTab.addEventListener("click", function () {
-    productosTab.className = "nav-link active"
-    reservasTab.className = "nav-link"
-    contactoTab.className = "nav-link"
-    asistenciaTab.className = "nav-link"
-    productTabSection.style.display = "block"
-    reservasSection.style.display = "none"
-    contactoSection.style.display = 'none'
-    asistenciaSection.style.display = 'none'
-    getProductos()
+    clientesSection.style.display = "block"
+    casasDeApuestasSection.style.display = "none"
+    depRetiSection.style.display = 'none'
+})
+
+casasDeApuestasTab.addEventListener("click", function () {
+    clientesTab.className = "nav-link "
+    casasDeApuestasSection.className = "nav-link active"
+    depRetiSection.className = "nav-link"
     
+    clientesSection.style.display = "none"
+    casasDeApuestasSection.style.display = "block"
+    depRetiSection.style.display = 'none'
 })
 
-reservasTab.addEventListener("click", function () {
-    productosTab.className = "nav-link"
-    reservasTab.className = "nav-link active"
-    contactoTab.className = "nav-link"
-    asistenciaTab.className = "nav-link"
-    productTabSection.style.display = "none"
-    reservasSection.style.display = "block"
-    contactoSection.style.display = 'none'
-    asistenciaSection.style.display = 'none'
-    getReservas('asc', 'proceso')
-    //cancelarReserva()
+depRetiTab.addEventListener("click", function () {
+    clientesTab.className = "nav-link"
+    casasDeApuestasSection.className = "nav-link"
+    depRetiSection.className = "nav-link active"
+    
+    clientesSection.style.display = "none"
+    casasDeApuestasSection.style.display = "none"
+    depRetiSection.style.display = 'block'
 })
-
-contactoTab.addEventListener("click", function () {
-    productosTab.className = "nav-link"
-    reservasTab.className = "nav-link"
-    contactoTab.className = "nav-link active"
-    asistenciaTab.className = "nav-link"
-    productTabSection.style.display = "none"
-    reservasSection.style.display = "none"
-    contactoSection.style.display = 'block'
-    asistenciaSection.style.display = 'none'
-    getContactos('asc', 'porContactar')
-})
-
-asistenciaTab.addEventListener('click', function (e) {
-    productosTab.className = "nav-link"
-    reservasTab.className = "nav-link"
-    contactoTab.className = "nav-link"
-    asistenciaTab.className = "nav-link active"
-    productTabSection.style.display = "none"
-    reservasSection.style.display = "none"
-    contactoSection.style.display = 'none'
-    asistenciaSection.style.display = 'block'
-    //getContactos('asc', 'porContactar')
-});

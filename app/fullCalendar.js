@@ -55,8 +55,6 @@ export const calendarioUpdate = document.addEventListener('DOMContentLoaded', as
             
             let pullData = [];
             querySnapshot.forEach((doc) => {
-                console.log(doc.userAuth);
-                console.log(user.uid);
                 let title = doc.userAuth === user.uid ? doc.calendarInfo.cliente : 'Titulo de otro user';
                 let color = doc.userAuth === user.uid ? '#004e23' : '#815A00';
                 pullData.push({ title: title, start: doc.start, color: color, extendedProps: doc.extendedProps });
